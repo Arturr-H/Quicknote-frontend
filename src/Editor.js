@@ -23,6 +23,7 @@ class Editor extends React.PureComponent {
 			},
 			placeText: {
 				active: false,
+				hasMoved: false,
 			},
 		};
 		this.notes = [];
@@ -36,11 +37,12 @@ class Editor extends React.PureComponent {
 
 		/*- Bindings -*/
 		this.activateTextBoxAreaTool = this.activateTextBoxAreaTool.bind(this);
-		this.moveSelectionCursor = this.moveSelectionCursor.bind(this);
-		this.addActiveDocument   = this.addActiveDocument.bind(this);
-		this.noteFollowCursor    = this.noteFollowCursor.bind(this);
-		this.placeNote           = this.placeNote.bind(this);
-		this.createText          = this.createText.bind(this);
+		this.addActiveDocument       = this.addActiveDocument.bind(this);
+		this.noteFollowCursor        = this.noteFollowCursor.bind(this);
+		this.createText              = this.createText.bind(this);
+		this.mouseMove               = this.mouseMove.bind(this);
+		this.placeNote               = this.placeNote.bind(this);
+		this.mouseUp                 = this.mouseUp.bind(this);
 
 	}
 
@@ -98,17 +100,20 @@ class Editor extends React.PureComponent {
 
 	/*- Default methods -*/
 	componentDidMount() {
-		document.addEventListener("mousemove", this.moveSelectionCursor);
+		document.addEventListener("mousemove", this.mouseMove);
+		document.addEventListener("mouseup", this.mouseUp);
 	}
 	componentWillUnmount() {
 	}
 
 	/*- Methods for selection tool -*/
-	moveSelectionCursor(event) {
+	mouseMove(event) {
 		/*- If mouse button is clicked -*/
-		if (this.state.placeText.active && event.buttons === 1) {
+		if (event.buttons === 1 && this.state.placeText.active) {
+
 			/*- If selection cursor is not active -*/
 			if (!this.state.selection.active) {
+
 				/*- Activate selection cursor -*/
 				this.setState({
 					selection: {
@@ -121,6 +126,10 @@ class Editor extends React.PureComponent {
 							width: 0,
 							height: 0,
 						},
+					},
+					placeText: {
+						hasMoved: true,
+						active: true,
 					},
 				});
 			}
@@ -136,11 +145,19 @@ class Editor extends React.PureComponent {
 							height: event.clientY - this.state.selection.position.y,
 						},
 					},
+					placeText: {
+						hasMoved: true,
+						active: true,
+					},
 				});
 			}
-		}else {
+		}
+	}
+	mouseUp(_) {
+		/*- If selection cursor is active -*/
+		if (this.state.selection.active) {
 			this.createText(this.state.selection);
-			console.log("Created text");
+
 			/*- Deactivate selection cursor -*/
 			this.setState({
 				selection: {
@@ -148,7 +165,10 @@ class Editor extends React.PureComponent {
 					position: { x: 0, y: 0 },
 					size: { width: 0, height: 0 },
 				},
-
+				
+				placeText: {
+					active: false,
+				}
 			});
 		}
 	}
@@ -173,7 +193,7 @@ class Editor extends React.PureComponent {
 	activateTextBoxAreaTool() {
 		this.setState({
 			selection: {
-				active: true,
+				active: false,
 				position: {
 					x: this.state.selection.position.x,
 					y: this.state.selection.position.y,
@@ -183,13 +203,11 @@ class Editor extends React.PureComponent {
 					height: this.state.selection.size.height,
 				},
 			},
-		}, () => {
-			document.addEventListener("mousedown", 	() => {
-				this.setState({ placeText: { active: true }});
-				document.addEventListener("mouseup", () => {
-					this.setState({ placeText: { active: false }})
-				});
-			});
+			
+			placeText: {
+				hasMoved: false,
+				active: true,
+			}
 		});
 	}
 
