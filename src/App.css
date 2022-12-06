@@ -193,6 +193,9 @@ main > .main > a { text-decoration: none; }
 	transition: background 0.04s ease;
 }.toolbar > .toolbar-btn:hover {
 	background: rgb(236, 236, 236);
+}.toolbar > .toolbar-btn.active {
+	box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1);
+
 }.toolbar > .toolbar-btn > p {
 	font-family: 'Poppins', sans-serif;
 	font-weight: 300;
@@ -338,7 +341,6 @@ main > .main > a { text-decoration: none; }
 /*- Edtor content -*/
 .editor-content {
 	background: #f8f8f8;
-	border-radius: 1.4rem;
 	width: 100%;
 	height: 100%;
 
@@ -349,8 +351,6 @@ main > .main > a { text-decoration: none; }
 	width: 100%;
 	flex: 1;
 	position: relative;
-	box-sizing: border-box;
-	padding: 1rem;
 }
 
 .watermark {

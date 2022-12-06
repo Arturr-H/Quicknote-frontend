@@ -31,6 +31,8 @@ class Editor extends React.PureComponent {
 
 		/*- Static -*/
 		this.gridSnap = 25;
+		this.maxTextWidth = 800;
+		this.maxTextHeight = 300;
 
 		/*- Refs -*/
 		this.drag = React.createRef();
@@ -104,6 +106,8 @@ class Editor extends React.PureComponent {
 		document.addEventListener("mouseup", this.mouseUp);
 	}
 	componentWillUnmount() {
+		document.removeEventListener("mousemove", this.mouseMove);
+		document.removeEventListener("mouseup", this.mouseUp);
 	}
 
 	/*- Methods for selection tool -*/
@@ -141,8 +145,8 @@ class Editor extends React.PureComponent {
 						active: true,
 						position: this.state.selection.position,
 						size: {
-							width: event.clientX - this.state.selection.position.x,
-							height: event.clientY - this.state.selection.position.y,
+							width: Math.min(event.clientX - this.state.selection.position.x, this.maxTextWidth),
+							height: Math.min(event.clientY - this.state.selection.position.y, this.maxTextHeight),
 						},
 					},
 					placeText: {
@@ -191,24 +195,34 @@ class Editor extends React.PureComponent {
 
 	/*- Add title with selection tool -*/
 	activateTextBoxAreaTool() {
-		this.setState({
-			selection: {
-				active: false,
-				position: {
-					x: this.state.selection.position.x,
-					y: this.state.selection.position.y,
-				},
-				size: {
-					width: this.state.selection.size.width,
-					height: this.state.selection.size.height,
-				},
+		let commonChange = {
+			active: false,
+			position: {
+				x: this.state.selection.position.x,
+				y: this.state.selection.position.y,
 			},
-			
-			placeText: {
-				hasMoved: false,
-				active: true,
-			}
-		});
+			size: {
+				width: this.state.selection.size.width,
+				height: this.state.selection.size.height,
+			},
+		};
+		if (this.state.placeText.active) {
+			this.setState({
+				selection: commonChange,
+				placeText: {
+					hasMoved: false,
+					active: false,
+				}
+			});
+		}else {
+			this.setState({
+				selection: commonChange,
+				placeText: {
+					hasMoved: false,
+					active: true,
+				}
+			});
+		}
 	}
 
 	/*- Render -*/
@@ -224,7 +238,13 @@ class Editor extends React.PureComponent {
 						</button>
 
 						{/*-  -*/}
-						<button className="toolbar-btn" onClick={this.activateTextBoxAreaTool}>
+						<button
+							className={
+								"toolbar-btn" +
+								(this.state.placeText.active ? " active" : "")
+							}
+							onClick={this.activateTextBoxAreaTool}
+						>
 							<Icon name="edit" size={32} />
 						</button>
 
