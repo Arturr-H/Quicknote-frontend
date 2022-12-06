@@ -292,9 +292,10 @@ main > .main > a { text-decoration: none; }
 
 	color: #333;
 }.item.text > header > .stack {
+	position: absolute;
 	display: none;
 }.item.text:hover > header > .stack {
-	display: block;
+	display: inline-flex;
 }
 
 /*- Placing notes -*/

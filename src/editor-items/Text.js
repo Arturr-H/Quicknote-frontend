@@ -59,7 +59,7 @@ export class Text extends React.PureComponent {
 		return (
 			<div
 				key={this.props.index}
-				className="item"
+				className="item text"
 				ref={this.text}
 				style={{
 					left: this.state.pos.x,
