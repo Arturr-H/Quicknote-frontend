@@ -2,6 +2,8 @@
 import "./App.css";
 import React from "react";
 import { Icon } from "./App";
+import { Note } from "./editor-items/Note";
+import { Text } from "./editor-items/Text";
 
 /*- Main -*/
 class Editor extends React.PureComponent {
@@ -18,9 +20,13 @@ class Editor extends React.PureComponent {
 				active: false,
 				position: { x: 0, y: 0 },
 				size: { width: 0, height: 0 },
-			}
+			},
+			placeText: {
+				active: false,
+			},
 		};
 		this.notes = [];
+		this.texts = [];
 
 		/*- Static -*/
 		this.gridSnap = 25;
@@ -29,10 +35,13 @@ class Editor extends React.PureComponent {
 		this.drag = React.createRef();
 
 		/*- Bindings -*/
+		this.activateTextBoxAreaTool = this.activateTextBoxAreaTool.bind(this);
 		this.moveSelectionCursor = this.moveSelectionCursor.bind(this);
 		this.addActiveDocument   = this.addActiveDocument.bind(this);
 		this.noteFollowCursor    = this.noteFollowCursor.bind(this);
 		this.placeNote           = this.placeNote.bind(this);
+		this.createText          = this.createText.bind(this);
+
 	}
 
 	/*- Methods -*/
@@ -92,15 +101,12 @@ class Editor extends React.PureComponent {
 		document.addEventListener("mousemove", this.moveSelectionCursor);
 	}
 	componentWillUnmount() {
-		this.drag.current.removeEventListener("mousedown", this.dragStart);
-		window.removeEventListener("mouseup", this.dragEnd);
-		window.removeEventListener("mousemove", this.dragMove);
 	}
 
 	/*- Methods for selection tool -*/
 	moveSelectionCursor(event) {
 		/*- If mouse button is clicked -*/
-		if (event.buttons === 1) {
+		if (this.state.placeText.active && event.buttons === 1) {
 			/*- If selection cursor is not active -*/
 			if (!this.state.selection.active) {
 				/*- Activate selection cursor -*/
@@ -131,9 +137,10 @@ class Editor extends React.PureComponent {
 						},
 					},
 				});
-				console.log(this.state.selection.size);
 			}
 		}else {
+			this.createText(this.state.selection);
+			console.log("Created text");
 			/*- Deactivate selection cursor -*/
 			this.setState({
 				selection: {
@@ -141,8 +148,49 @@ class Editor extends React.PureComponent {
 					position: { x: 0, y: 0 },
 					size: { width: 0, height: 0 },
 				},
+
 			});
 		}
+	}
+
+	/*- Create text -*/
+	createText(selection) {
+		if (selection.size.width > 0 && selection.size.height > 0) {
+			this.texts.push({
+				position: {
+					x: selection.position.x,
+					y: selection.position.y,
+				},
+				size: {
+					width: selection.size.width,
+					height: selection.size.height,
+				},
+			});
+		}
+	}
+
+	/*- Add title with selection tool -*/
+	activateTextBoxAreaTool() {
+		this.setState({
+			selection: {
+				active: true,
+				position: {
+					x: this.state.selection.position.x,
+					y: this.state.selection.position.y,
+				},
+				size: {
+					width: this.state.selection.size.width,
+					height: this.state.selection.size.height,
+				},
+			},
+		}, () => {
+			document.addEventListener("mousedown", 	() => {
+				this.setState({ placeText: { active: true }});
+				document.addEventListener("mouseup", () => {
+					this.setState({ placeText: { active: false }})
+				});
+			});
+		});
 	}
 
 	/*- Render -*/
@@ -158,7 +206,7 @@ class Editor extends React.PureComponent {
 						</button>
 
 						{/*-  -*/}
-						<button className="toolbar-btn">
+						<button className="toolbar-btn" onClick={this.activateTextBoxAreaTool}>
 							<Icon name="edit" size={32} />
 						</button>
 
@@ -166,6 +214,8 @@ class Editor extends React.PureComponent {
 						<button className="toolbar-btn">
 							<Icon name="delete" size={32} />
 						</button>
+
+						{this.state.placeText.active && <p>aa</p>}
 					</div>
 					<div className="editor-content">
 						<h1 className="watermark">Quicknotes</h1>
@@ -202,94 +252,12 @@ class Editor extends React.PureComponent {
 						
 						{/*- Notes -*/}
 						{this.notes.map((data, index) => <Note gridSnap={this.gridSnap} data={data} key={index} index={index} />)}
+
+						{/*- Texts -*/}
+						{this.texts.map((data, index) => <Text gridSnap={this.gridSnap} data={data} key={index} index={index} />)}
 					</div>
 				</div>
 			</main>
-		)
-	}
-}
-
-/*- Components -*/
-class Note extends React.PureComponent {
-	constructor(props) {
-		super(props);
-
-		/*- Changeable -*/
-		this.state = {
-			dragging: false,
-			pos: {
-				x: this.props.data.position.x,
-				y: this.props.data.position.y,
-			}
-		};
-		this.data = this.props.data;
-		
-		/*- Refs -*/
-		this.drag = React.createRef();
-		this.note = React.createRef();
-		this.body = React.createRef();
-
-		/*- Statics -*/
-		this.gridSnap = this.props.gridSnap;
-
-		/*- Bindings -*/
-	}
-
-	/*- Methods -*/
-	componentDidMount() {
-		this.drag.current.addEventListener("mousedown", this.dragStart);
-		window.addEventListener("mouseup", this.dragEnd);
-		window.addEventListener("mousemove", this.dragMove);
-	}
-
-	componentWillUnmount() {
-		this.drag.current.removeEventListener("mousedown", this.dragStart);
-		window.removeEventListener("mouseup", this.dragEnd);
-		window.removeEventListener("mousemove", this.dragMove);
-	}
-
-	/*- Event Handlers -*/
-	dragStart = (e) => { this.setState({ dragging: true }); }
-	dragEnd = (e) =>   { this.setState({ dragging: false }); }
-	dragMove = (e) => {
-		if (this.state.dragging) {
-			this.setState({
-				pos: {
-					x: Math.round((e.clientX - this.note.current.offsetWidth / 2) / this.gridSnap) * this.gridSnap,
-
-					// Minus half the height of the note to center it - margin
-					y: Math.round((e.clientY - this.note.current.offsetHeight / 2 + this.note.current.offsetHeight / 2 - 20) / this.gridSnap) * this.gridSnap,
-				}
-			});
-		}
-	}
-
-	/*- Render -*/
-	render() {
-		return (
-			<div
-				key={this.props.index}
-				className="note"
-				ref={this.note}
-				style={{
-					left: this.state.pos.x,
-					top: this.state.pos.y
-				}}
-			>
-				<header>
-					<div className="actions">
-						<div className="_1"></div>
-						<div className="_2"></div>
-						<div className="_3"></div>
-					</div>
-					<div className="stack" ref={this.drag}>
-						<div></div>
-						<div></div>
-						<div></div>
-					</div>
-				</header>
-				<TextArea autoFocus ref={this.body} onResize={this.onResize} className="note-body" placeholder="Write something..." />
-			</div>
 		)
 	}
 }
