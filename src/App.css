@@ -284,8 +284,8 @@ main > .main > a { text-decoration: none; }
 
 /*- Placing notes -*/
 .note-place {
-	width: 9rem;
-	height: 7rem;
+	width: 9.1rem;
+	height: 7.1rem;
 
 	box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
 	border-radius: 0.75rem;
@@ -308,6 +308,14 @@ main > .main > a { text-decoration: none; }
 }.note-place.active {
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 	backdrop-filter: blur(2px);
+}
+
+/*- Selection tools -*/
+.selection {
+	background: rgba(34, 86, 242, 0.049);
+	border: 0.1rem solid rgba(216, 222, 241, 0.5);
+	position: absolute;
+	z-index: 101;
 }
 
 
