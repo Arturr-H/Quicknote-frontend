@@ -9,7 +9,7 @@ class App extends React.PureComponent {
 			<main>
 				<nav>
 					<div>
-						<h1>Quicknotes</h1>
+						<h1>Quicknote</h1>
 					</div>
 					<div>
 						<a className="text-link" href="/signup">Sign Up</a>

@@ -236,7 +236,7 @@ class Editor extends React.PureComponent {
 						{this.state.placeText.active && <p>aa</p>}
 					</div>
 					<div className="editor-content">
-						<h1 className="watermark">Quicknotes</h1>
+						<h1 className="watermark">Quicknote</h1>
 
 						{/*- Notes cursor -*/}
 						{this.state.placeNote.active && <div className="note-place" ref={this.drag}></div>}
