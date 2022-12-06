@@ -12,7 +12,8 @@ export class Note extends React.PureComponent {
 			pos: {
 				x: this.props.data.position.x,
 				y: this.props.data.position.y,
-			}
+			},
+			focused: false,
 		};
 		this.data = this.props.data;
 
@@ -23,6 +24,7 @@ export class Note extends React.PureComponent {
 
 		/*- Statics -*/
 		this.gridSnap = this.props.gridSnap;
+		this.onDelete = this.props.onDelete;
 
 		/*- Bindings -*/
 	}
@@ -70,9 +72,9 @@ export class Note extends React.PureComponent {
 			>
 				<header>
 					<div className="actions">
-						<div className="_1"></div>
-						<div className="_2"></div>
-						<div className="_3"></div>
+						<button className="_1" onClick={this.props.onDelete}></button>
+						<button className="_2"></button>
+						<button className="_3"></button>
 					</div>
 					<div className="stack" ref={this.drag}>
 						<div></div>
@@ -80,7 +82,16 @@ export class Note extends React.PureComponent {
 						<div></div>
 					</div>
 				</header>
-				<TextArea autoFocus ref={this.body} onResize={this.onResize} className="note-body" placeholder="Write something..." />
+				<TextArea
+					autoFocus
+					ref={this.body}
+					onResize={this.onResize}
+					className="note-body"
+					placeholder="Write something..."
+					onFocus={() => this.setState({ focused: true })}
+					onBlur={() => this.setState({ focused: false })}
+					spellCheck={this.state.focused}
+				/>
 			</div>
 		);
 	}

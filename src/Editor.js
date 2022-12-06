@@ -289,10 +289,32 @@ class Editor extends React.PureComponent {
 						}}></div>}
 						
 						{/*- Notes -*/}
-						{this.notes.map((data, index) => <Note gridSnap={this.gridSnap} data={data} key={index} index={index} />)}
+						{this.notes.map((data, index) => <Note
+							gridSnap={this.gridSnap}
+							data={data}
+							key={index}
+							index={index}
+							onDelete={() => {
+								this.notes.splice(index, 1);
+
+								/*- Cause re-render -*/
+								this.setState({ notes: this.notes });
+							}}
+						/>)}
 
 						{/*- Texts -*/}
-						{this.texts.map((data, index) => <Text gridSnap={this.gridSnap} data={data} key={index} index={index} />)}
+						{this.texts.map((data, index) => <Text
+							gridSnap={this.gridSnap}
+							data={data}
+							key={index}
+							index={index}
+							onDelete={() => {
+								this.texts.splice(index, 1);
+
+								/*- Cause re-render -*/
+								this.setState({ texts: this.texts });
+							}}
+						/>)}
 					</div>
 				</div>
 			</main>

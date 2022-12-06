@@ -269,13 +269,17 @@ main > .main > a { text-decoration: none; }
 
 	position: absolute;
 	left: 0.4rem;
-}.item > header > .actions > div {
+}.item > header > .actions > button {
 	width: 0.6rem;
 	height: 0.6rem;
-
+	cursor: pointer;
 	border-radius: 0.25rem;
 	transition: transform 0.1s ease-in-out;
-}.item > header > .actions > div:hover {
+
+	border: none;
+	outline: none;
+	display: block;
+}.item > header > .actions > button:hover {
 	transform: scale(1.2) rotate(32deg);
 }.item > header > .actions > ._1 {
 	background: rgb(237, 106, 95);
@@ -283,7 +287,12 @@ main > .main > a { text-decoration: none; }
 	background: rgb(245, 189, 79);
 }.item > header > .actions > ._3 {
 	background: rgb(97, 195, 84);
-}.text-body {
+}.item > header > .actions > button:active {
+	cursor: pointer;
+	transform: scale(1) rotate(20deg);
+}
+
+.text-body {
 	width: 100%;
 	height: 100%;
 
@@ -294,10 +303,11 @@ main > .main > a { text-decoration: none; }
 	font-weight: 800;
 
 	color: #333;
-}.item.text > header > .stack {
+	text-align: center;
+}.item.text > header > .stack, .item.text > header > .actions {
 	position: absolute;
 	display: none;
-}.item.text:hover > header > .stack {
+}.item.text:hover > header > .stack, .item.text:hover > header > .actions {
 	display: inline-flex;
 }
 

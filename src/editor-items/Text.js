@@ -21,6 +21,7 @@ export class Text extends React.PureComponent {
 
 		/*- Statics -*/
 		this.gridSnap = this.props.gridSnap;
+		this.onDelete = this.props.onDelete;
 
 		/*- Bindings -*/
 	}
@@ -70,6 +71,11 @@ export class Text extends React.PureComponent {
 				}}
 			>
 				<header>
+					<div className="actions">
+						<button className="_1" onClick={this.props.onDelete}></button>
+						<button className="_2"></button>
+						<button className="_3"></button>
+					</div>
 					<div className="stack" ref={this.drag}>
 						<div></div>
 						<div></div>
