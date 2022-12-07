@@ -115,21 +115,22 @@ class Icon extends React.PureComponent {
 		this.name = this.props.name || "question-circle";
 		this.size = this.props.size || 24;
 		this.icons = {
-			"more-circle": require("./icons/more-circle.svg").default,
-			"edit-square": require("./icons/edit-square.svg").default,
-			"time-square": require("./icons/time-square.svg").default,
-			"arrow-down" : require("./icons/arrow-down.svg").default,
-			"arrow-up"	 : require("./icons/arrow-up.svg").default,
-			"category"   : require("./icons/category.svg").default,
-			"profile"    : require("./icons/profile.svg").default,
-			"document"   : require("./icons/document.svg").default,
-			"search"     : require("./icons/search.svg").default,
-			"delete"     : require("./icons/delete.svg").default,
-			"filter"     : require("./icons/filter.svg").default,
-			"folder"     : require("./icons/folder.svg").default,
-			"edit"       : require("./icons/edit.svg").default,
-			"home"       : require("./icons/home.svg").default,
-			"show"       : require("./icons/show.svg").default,
+			"document-clear": require("./icons/document-clear.svg").default,
+			"more-circle"   : require("./icons/more-circle.svg").default,
+			"edit-square"   : require("./icons/edit-square.svg").default,
+			"time-square"   : require("./icons/time-square.svg").default,
+			"arrow-down"    : require("./icons/arrow-down.svg").default,
+			"arrow-up"      : require("./icons/arrow-up.svg").default,
+			"category"      : require("./icons/category.svg").default,
+			"profile"       : require("./icons/profile.svg").default,
+			"document"      : require("./icons/document.svg").default,
+			"search"        : require("./icons/search.svg").default,
+			"delete"        : require("./icons/delete.svg").default,
+			"filter"        : require("./icons/filter.svg").default,
+			"folder"        : require("./icons/folder.svg").default,
+			"edit"          : require("./icons/edit.svg").default,
+			"home"          : require("./icons/home.svg").default,
+			"show"          : require("./icons/show.svg").default,
 		};
 
 		/*- Bindings -*/

@@ -301,6 +301,80 @@ main > .main > a { text-decoration: none; }
 	transform: scale(1) rotate(20deg);
 }
 
+/*- Contextmenu -*/
+.contextmenu {
+	width: 8rem;
+	height: auto;
+
+	position: absolute;
+
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+
+	box-sizing: border-box;
+	padding: 0.5rem;
+	padding-top: 0.1rem;
+	padding-bottom: 0.1rem;
+
+	background: #fff;
+	box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
+	border-radius: 0.75rem;
+	border: 0.1rem solid #eee;
+
+	z-index: 20;
+}.contextmenu > .context-menu-item {
+	width: 100%;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	padding-top: 0.3rem;
+	padding-bottom: 0.3rem;
+}.contextmenu > .context-menu-item > button.context-button {
+	background: #fff;
+	border: none;
+
+	box-sizing: border-box;
+	padding-left: 0.4rem;
+	padding-right: 0.4rem;
+
+	font-family: 'Poppins', sans-serif;
+	font-weight: 300;
+	font-size: 0.8rem;
+
+	color: #aaa;
+	width: 100%;
+	text-align: left;
+
+	margin-left: 0.2rem;
+	border-radius: 0.2rem;
+}.contextmenu > .context-menu-item > button.context-button:hover {
+	color: #fff;
+	background: rgb(166, 209, 235);
+}.contextmenu > .context-menu-item > button.context-button:active {
+	color: #333;
+	background: #ddd;
+}.contextmenu > .context-menu-item > button.context-button.colored-red:hover {
+	background: rgb(237, 106, 95) !important;
+}.contextmenu > .context-menu-item > .color-dot {
+	height: 1rem;
+	aspect-ratio: 1;
+
+	border-radius: 0.2rem;
+	outline: 0.1rem solid rgb(86, 86, 86);
+}.context-menu-separator {
+	width: 100%;
+	height: 0.1rem;
+
+	background: #eee;
+	border-radius: 0.1rem;
+
+	margin-top: 0.4rem;
+	margin-bottom: 0.4rem;
+}
+
 .text-body {
 	width: 100%;
 	height: 100%;

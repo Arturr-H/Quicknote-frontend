@@ -4,6 +4,7 @@ import React from "react";
 import { Icon } from "./App";
 import { Note } from "./editor-items/Note";
 import { Text } from "./editor-items/Text";
+import { Canvas } from "./editor-items/Canvas";
 
 /*- Main -*/
 class Editor extends React.PureComponent {
@@ -29,12 +30,15 @@ class Editor extends React.PureComponent {
 			snappingIndex: 0,
 
 			texts: {},
-			notes: {}
+			notes: {},
+			canvases: {},
 		};
 		this.notes = {};
 		this.nextNoteIndex = 0;
 		this.texts = {};
 		this.nextTextIndex = 0;
+		this.canvases = {};
+		this.nextCanvasIndex = 0;
 
 		/*- Static -*/
 		this.gridSnaps = [1, 4, 8, 15, 25, 35, 50];
@@ -49,16 +53,15 @@ class Editor extends React.PureComponent {
 		this.incrementGridSnap 		 = this.incrementGridSnap.bind(this);
 		this.addActiveDocument       = this.addActiveDocument.bind(this);
 		this.noteFollowCursor        = this.noteFollowCursor.bind(this);
+		this.addCanvas     		     = this.addCanvas.bind(this);
 		this.createText              = this.createText.bind(this);
 		this.mouseMove               = this.mouseMove.bind(this);
 		this.placeNote               = this.placeNote.bind(this);
 		this.mouseUp                 = this.mouseUp.bind(this);
-		this.debug                   = this.debug.bind(this);
 	}
 
 	/*- Increment Grid Snap -*/
 	incrementGridSnap() {
-		console.log(this.gridSnaps[this.state.snappingIndex]);
 		if (this.state.snappingIndex < this.gridSnaps.length - 1) {
 			this.setState({ snappingIndex: this.state.snappingIndex + 1 });
 		}else {
@@ -209,6 +212,32 @@ class Editor extends React.PureComponent {
 		}
 	}
 
+	/*- Methods for canvas tool -*/
+	addCanvas() {
+		let newCanvas = {
+			position: {
+				x: 0,
+				y: 0,
+			},
+			size: {
+				width: 0,
+				height: 0,
+			},
+		};
+		this.canvases["canvas" + this.nextCanvasIndex] = newCanvas;
+
+		/*- Add Canvas -*/
+		this.setState({
+			canvases: {
+				...this.state.canvases,
+				["canvas" + this.nextCanvasIndex]: newCanvas
+			}
+		});
+
+		/*- Increment Canvas Index -*/
+		this.nextCanvasIndex++;
+	}
+
 	/*- Create text -*/
 	createText(selection) {
 		if (selection.size.width > 0 && selection.size.height > 0) {
@@ -269,10 +298,6 @@ class Editor extends React.PureComponent {
 			});
 		}
 	}
-	debug() {
-		console.log("notes:", this.notes);
-		console.log("texts:", this.texts);
-	}
 
 	/*- Render -*/
 	render() {
@@ -286,7 +311,7 @@ class Editor extends React.PureComponent {
 								<Icon name="document" size={32} />
 							</button>
 
-							{/*-  -*/}
+							{/*- Create text -*/}
 							<button
 								className={"toolbar-btn" + (this.state.placeText.active ? " active" : "")}
 								onClick={this.activateTextBoxAreaTool}
@@ -294,12 +319,13 @@ class Editor extends React.PureComponent {
 								<Icon name="edit" size={32} />
 							</button>
 
-							{/*-  -*/}
+							{/*- Grid snap size -*/}
 							<button className="toolbar-btn" onClick={this.incrementGridSnap}>
 								<Icon name="category" size={32} />
 							</button>
 
-							<button className="toolbar-btn" onClick={this.debug}>
+							{/*- Create canvas -*/}
+							<button className="toolbar-btn" onClick={this.addCanvas}>
 								<Icon name="profile" size={32} />
 							</button>
 
@@ -386,6 +412,31 @@ class Editor extends React.PureComponent {
 								/>
 							)
 						})}
+
+						{/*- Canvases -*/}
+						{Object.keys(this.state.canvases).map(key => {
+							const data = this.state.canvases[key];
+							return (
+								<Canvas
+									gridSnap={this.gridSnaps[this.state.snappingIndex]}
+									data={data}
+									key={key}
+									index={key}
+									onDelete={() => {
+										delete this.canvases[key];
+
+										/*- If no canvases, force update because it won't re-render -*/
+										if (Object.keys(this.canvases).length === 0) {
+											this.forceUpdate();
+										}
+
+										/*- Cause re-render -*/
+										this.setState({ canvases: this.canvases });
+									}}
+								/>
+							)
+						})}
+
 						
 					</div>
 				</div>
@@ -403,7 +454,7 @@ export class TextArea extends React.PureComponent {
 	}
 
 	render() {
-		return <textarea onResize={this.props.onResize} {...this.props} onKeyUp={this.handleKeyDown} onKeyDown={this.handleKeyDown} />;
+		return <textarea ref={this.props._ref} onResize={this.props.onResize} {...this.props} onKeyUp={this.handleKeyDown} onKeyDown={this.handleKeyDown} />;
 	}
 }
 
