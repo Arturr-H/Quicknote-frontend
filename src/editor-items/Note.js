@@ -23,7 +23,6 @@ export class Note extends React.PureComponent {
 		this.body = React.createRef();
 
 		/*- Statics -*/
-		this.gridSnap = this.props.gridSnap;
 		this.onDelete = this.props.onDelete;
 
 		/*- Bindings -*/
@@ -31,6 +30,7 @@ export class Note extends React.PureComponent {
 
 	/*- Methods -*/
 	componentDidMount() {
+		console.log("a", this.props.data);
 		this.drag.current.addEventListener("mousedown", this.dragStart);
 		window.addEventListener("mouseup", this.dragEnd);
 		window.addEventListener("mousemove", this.dragMove);
@@ -49,10 +49,10 @@ export class Note extends React.PureComponent {
 		if (this.state.dragging) {
 			this.setState({
 				pos: {
-					x: Math.round((e.clientX - this.note.current.offsetWidth / 2) / this.gridSnap) * this.gridSnap,
+					x: Math.round((e.clientX - this.note.current.offsetWidth / 2) / this.props.gridSnap) * this.props.gridSnap,
 
 					// Minus half the height of the note to center it - margin
-					y: Math.round((e.clientY - this.note.current.offsetHeight / 2 + this.note.current.offsetHeight / 2 - 20) / this.gridSnap) * this.gridSnap,
+					y: Math.round((e.clientY - this.note.current.offsetHeight / 2 + this.note.current.offsetHeight / 2 - 20) / this.props.gridSnap) * this.props.gridSnap,
 				}
 			});
 		}

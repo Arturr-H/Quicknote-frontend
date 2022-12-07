@@ -20,7 +20,6 @@ export class Text extends React.PureComponent {
 		this.body = React.createRef();
 
 		/*- Statics -*/
-		this.gridSnap = this.props.gridSnap;
 		this.onDelete = this.props.onDelete;
 
 		/*- Bindings -*/
@@ -46,10 +45,10 @@ export class Text extends React.PureComponent {
 		if (this.state.dragging) {
 			this.setState({
 				pos: {
-					x: Math.round((e.clientX - this.text.current.offsetWidth / 2) / this.gridSnap) * this.gridSnap,
+					x: Math.round((e.clientX - this.text.current.offsetWidth / 2) / this.props.gridSnap) * this.props.gridSnap,
 
 					// Minus half the height of the note to center it - margin
-					y: Math.round((e.clientY - this.text.current.offsetHeight / 2 + this.text.current.offsetHeight / 2 - 20) / this.gridSnap) * this.gridSnap,
+					y: Math.round((e.clientY - this.text.current.offsetHeight / 2 + this.text.current.offsetHeight / 2 - 20) / this.props.gridSnap) * this.props.gridSnap,
 				}
 			});
 		}

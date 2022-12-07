@@ -25,12 +25,19 @@ class Editor extends React.PureComponent {
 				active: false,
 				hasMoved: false,
 			},
+
+			snappingIndex: 0,
+
+			texts: {},
+			notes: {}
 		};
-		this.notes = [];
-		this.texts = [];
+		this.notes = {};
+		this.nextNoteIndex = 0;
+		this.texts = {};
+		this.nextTextIndex = 0;
 
 		/*- Static -*/
-		this.gridSnap = 25;
+		this.gridSnaps = [1, 4, 8, 15, 25, 35, 50];
 		this.maxTextWidth = 800;
 		this.maxTextHeight = 300;
 
@@ -39,13 +46,24 @@ class Editor extends React.PureComponent {
 
 		/*- Bindings -*/
 		this.activateTextBoxAreaTool = this.activateTextBoxAreaTool.bind(this);
+		this.incrementGridSnap 		 = this.incrementGridSnap.bind(this);
 		this.addActiveDocument       = this.addActiveDocument.bind(this);
 		this.noteFollowCursor        = this.noteFollowCursor.bind(this);
 		this.createText              = this.createText.bind(this);
 		this.mouseMove               = this.mouseMove.bind(this);
 		this.placeNote               = this.placeNote.bind(this);
 		this.mouseUp                 = this.mouseUp.bind(this);
+		this.debug                   = this.debug.bind(this);
+	}
 
+	/*- Increment Grid Snap -*/
+	incrementGridSnap() {
+		console.log(this.gridSnaps[this.state.snappingIndex]);
+		if (this.state.snappingIndex < this.gridSnaps.length - 1) {
+			this.setState({ snappingIndex: this.state.snappingIndex + 1 });
+		}else {
+			this.setState({ snappingIndex: 0 });
+		}
 	}
 
 	/*- Methods -*/
@@ -59,15 +77,19 @@ class Editor extends React.PureComponent {
 			this.drag.current.classList.remove("active");
 			this.drag.current.style.left = 0 + "px";
 			this.drag.current.style.top = 0 + "px";
+
+			/*- Add Event Listeners -*/
+			document.addEventListener("mousemove", this.noteFollowCursor);
+			document.addEventListener("mousedown", this.placeNote);
 		});
 
-		/*- Add Event Listeners -*/
-		document.addEventListener("mousemove", this.noteFollowCursor);
-		document.addEventListener("mousedown", this.placeNote);
 	}
 	noteFollowCursor(event) {
-		this.drag.current.style.left = Math.round((event.clientX - 108) / this.gridSnap) * this.gridSnap + "px";
-		this.drag.current.style.top = Math.round((event.clientY - 84) / this.gridSnap) * this.gridSnap + "px";
+		let gridSnap = this.gridSnaps[this.state.snappingIndex];
+
+		/*- Set position of note -*/
+		this.drag.current.style.left = Math.round((event.clientX - 108) / gridSnap) * gridSnap + "px";
+		this.drag.current.style.top = Math.round((event.clientY - 84) / gridSnap) * gridSnap + "px";
 		this.setState({
 			position: {
 				x: event.clientX,
@@ -83,20 +105,30 @@ class Editor extends React.PureComponent {
 		document.removeEventListener("mousemove", this.noteFollowCursor);
 		document.removeEventListener("mosedown", this.placeNote);
 
+		/*- Create Note -*/
+		let newNote = {
+			position: {
+				x: parseInt(this.drag.current.style.left),
+				y: parseInt(this.drag.current.style.top)
+			},
+		};
+		this.notes["note" + this.nextNoteIndex] = newNote;
+
 		/*- Add Note -*/
 		setTimeout(() => {
-			this.notes.push({
-				position: {
-					x: parseInt(this.drag.current.style.left), 
-					y: parseInt(this.drag.current.style.top)
-				},
-			});
 			this.setState({
 				placeNote: {
 					active: false,
 					position: { x: 0, y: 0 },
 				},
+				notes: {
+					...this.state.notes,
+					["note" + this.nextNoteIndex]: newNote
+				}
 			});
+
+			/*- Increment Note Index -*/
+			this.nextNoteIndex++;
 		}, 50);
 	}
 
@@ -180,7 +212,7 @@ class Editor extends React.PureComponent {
 	/*- Create text -*/
 	createText(selection) {
 		if (selection.size.width > 0 && selection.size.height > 0) {
-			this.texts.push({
+			let newText = {
 				position: {
 					x: selection.position.x,
 					y: selection.position.y,
@@ -189,7 +221,20 @@ class Editor extends React.PureComponent {
 					width: selection.size.width,
 					height: selection.size.height,
 				},
+			};
+
+			/*- Add Text -*/
+			this.setState({
+				texts: {
+					...this.state.texts,
+					["text" + this.nextTextIndex]: newText
+				}
 			});
+
+			this.texts["text" + this.nextTextIndex] = newText;
+
+			/*- Increment Text Index -*/
+			this.nextTextIndex++;
 		}
 	}
 
@@ -224,36 +269,42 @@ class Editor extends React.PureComponent {
 			});
 		}
 	}
+	debug() {
+		console.log("notes:", this.notes);
+		console.log("texts:", this.texts);
+	}
 
 	/*- Render -*/
 	render() {
 		return (
 			<main>
 				<div className="main-wrapper">
-					<div className="toolbar">
+					<div className="toolbar-positioner">
+						<div className="toolbar">
+							{/*- Create note -*/}
+							<button className="toolbar-btn" onClick={this.addActiveDocument}>
+								<Icon name="document" size={32} />
+							</button>
 
-						{/*- Create note -*/}
-						<button className="toolbar-btn" onClick={this.addActiveDocument}>
-							<Icon name="document" size={32} />
-						</button>
+							{/*-  -*/}
+							<button
+								className={"toolbar-btn" + (this.state.placeText.active ? " active" : "")}
+								onClick={this.activateTextBoxAreaTool}
+							>
+								<Icon name="edit" size={32} />
+							</button>
 
-						{/*-  -*/}
-						<button
-							className={
-								"toolbar-btn" +
-								(this.state.placeText.active ? " active" : "")
-							}
-							onClick={this.activateTextBoxAreaTool}
-						>
-							<Icon name="edit" size={32} />
-						</button>
+							{/*-  -*/}
+							<button className="toolbar-btn" onClick={this.incrementGridSnap}>
+								<Icon name="category" size={32} />
+							</button>
 
-						{/*-  -*/}
-						<button className="toolbar-btn">
-							<Icon name="delete" size={32} />
-						</button>
+							<button className="toolbar-btn" onClick={this.debug}>
+								<Icon name="profile" size={32} />
+							</button>
 
-						{this.state.placeText.active && <p>aa</p>}
+							{this.state.placeText.active && <p>aa</p>}
+						</div>
 					</div>
 					<div className="editor-content">
 						<h1 className="watermark">Quicknote</h1>
@@ -289,32 +340,53 @@ class Editor extends React.PureComponent {
 						}}></div>}
 						
 						{/*- Notes -*/}
-						{this.notes.map((data, index) => <Note
-							gridSnap={this.gridSnap}
-							data={data}
-							key={index}
-							index={index}
-							onDelete={() => {
-								this.notes.splice(index, 1);
+						{Object.keys(this.state.notes).map(key => {
+							const data = this.state.notes[key];
+							return (
+								<Note
+									gridSnap={this.gridSnaps[this.state.snappingIndex]}
+									data={data}
+									key={key}
+									index={key}
+									onDelete={() => {
+										delete this.notes[key];
 
-								/*- Cause re-render -*/
-								this.setState({ notes: this.notes });
-							}}
-						/>)}
+										/*- If no notes, force update because it won't re-render -*/
+										if (Object.keys(this.notes).length === 0) {
+											this.forceUpdate();
+										}
+
+										/*- Cause re-render -*/
+										this.setState({ notes: this.notes });
+									}}
+								/>
+							)
+						})}
 
 						{/*- Texts -*/}
-						{this.texts.map((data, index) => <Text
-							gridSnap={this.gridSnap}
-							data={data}
-							key={index}
-							index={index}
-							onDelete={() => {
-								this.texts.splice(index, 1);
+						{Object.keys(this.state.texts).map(key => {
+							const data = this.state.texts[key];
+							return (
+								<Text
+									gridSnap={this.gridSnaps[this.state.snappingIndex]}
+									data={data}
+									key={key}
+									index={key}
+									onDelete={() => {
+										delete this.texts[key];
 
-								/*- Cause re-render -*/
-								this.setState({ texts: this.texts });
-							}}
-						/>)}
+										/*- If no texts, force update because it won't re-render -*/
+										if (Object.keys(this.texts).length === 0) {
+											this.forceUpdate();
+										}
+
+										/*- Cause re-render -*/
+										this.setState({ texts: this.texts });
+									}}
+								/>
+							)
+						})}
+						
 					</div>
 				</div>
 			</main>

@@ -155,14 +155,17 @@ main > .main > a { text-decoration: none; }
 .icon-margin { margin-right: 0.25rem; }
 
 /*- Toolbar -*/
-.toolbar {
+.toolbar-positioner {
 	width: 4rem;
 	height: auto;
-
+	position: absolute;
+}.toolbar {
+	width: 100%;
+	height: 100%;
 	border-radius: 1rem;
 	background: #fff;
 
-	position: absolute;
+	position: relative;
 	display: inline-flex;
 	flex-wrap: wrap;
 	flex-direction: column;
@@ -183,6 +186,7 @@ main > .main > a { text-decoration: none; }
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-direction: column;
 
 	cursor: pointer;
 
@@ -206,6 +210,9 @@ main > .main > a { text-decoration: none; }
 
 	color: #aaa;
 	cursor:default;
+}.toolbar > .toolbar-btn.behind {
+	position: absolute;
+	left: 4rem;
 }
 
 /*- Note items -*/
@@ -246,6 +253,8 @@ main > .main > a { text-decoration: none; }
 }.item > header {
 	display: flex;
 	flex-direction: row;
+
+	justify-content: center;
 }.item > header > .stack {
 	display: inline-flex;
 	flex-direction: column;
