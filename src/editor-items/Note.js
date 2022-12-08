@@ -115,7 +115,9 @@ export class Note extends React.PureComponent {
 
 	/*- Body changes -*/
 	onChange = (e) => {
-		this.setState({ value: e.target.value });
+		this.props.onChange(
+			e.target.value
+		);
 	};
 
 	/*- Render -*/
@@ -182,7 +184,7 @@ export class Note extends React.PureComponent {
 					onFocus={() => this.setState({ focused: true })}
 					onBlur={() => this.setState({ focused: false })}
 					spellCheck={this.state.focused}
-					value={this.state.value}
+					value={this.props.data.content}
 					onChange={this.onChange}
 				/>
 			</div>

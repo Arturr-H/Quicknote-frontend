@@ -2,8 +2,49 @@
 import "./App.css";
 import React from "react";
 
+/*- Constants -*/
+const BACKEND_URL = "http://localhost:8080/";
+
 /*- Main -*/
 class App extends React.PureComponent {
+	constructor(props) {
+		super(props);
+
+		/*- Changeable -*/
+		this.state = {
+			docs: []
+		};
+
+		/*- Static -*/
+	}
+
+	/*- Default methods -*/
+	componentDidMount() {
+		/*- Fetch data -*/
+		fetch(BACKEND_URL + "get-documents", {
+			method: "GET",
+			headers: {
+				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4"
+			}
+		}).then(async res => {
+			this.setState({ docs: await res.json() });
+		});
+	}
+
+	/*- Methods -*/
+	createDocument = () => {
+		fetch(BACKEND_URL + "add-doc", {
+			method: "GET",
+			headers: {
+				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4"
+			}
+		}).then(async res => {
+			const { id } = await res.json();
+
+			window.location.href = "/editor/" + id;
+		});
+	}
+
 	render() {
 		return (
 			<main>
@@ -17,14 +58,26 @@ class App extends React.PureComponent {
 					</div>
 				</nav>
 				<div className="main">
-					<Card />
-					<Card />
-					<Card />
-					<Card />
-					<Card />
-					<Card />
-					<Card />
-					<Card />
+					{
+						this.state.docs.map((data, index) => 
+							<Card
+								key={index}
+								title={data.title}
+								description={data.description}
+								date={data.date}
+								author={data.author}
+								href={data.id}
+							/>
+						)
+					}
+
+					{/*- Add new note -*/}
+					<div className="card" onClick={this.createDocument}>
+						<div className="add-icon-container">
+							<Icon name="edit" size={90} />
+							<p>Create document</p>
+						</div>
+					</div>
 				</div>
 			</main>
 		)
@@ -44,7 +97,7 @@ class Card extends React.PureComponent {
 		this.description = this.props.description || "No description provided";
 		this.date        = this.props.date || Date.now();
 		this.author      = this.props.author || "Unknown author";
-		this.href        = this.props.href || "/unknown";
+		this.href        = this.props.href || "unknown";
 
 		/*- Bindings -*/
 		this._date = this._date.bind(this);
@@ -64,7 +117,7 @@ class Card extends React.PureComponent {
 	/*- Render -*/
 	render() {
 		return (
-			<a href={"/editor" + this.href} target="blank">
+			<a href={"/editor/" + this.href} target="blank">
 				<div className="card">
 					<div className="text">
 						<h2>{this.title}</h2>

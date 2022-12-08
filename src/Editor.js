@@ -48,6 +48,9 @@ class Editor extends React.PureComponent {
 		this.maxTextWidth = 800;
 		this.maxTextHeight = 300;
 
+		/*- Get id from url -*/
+		this.id = window.location.pathname.split("/")[2];
+
 		/*- Refs -*/
 		this.drag = React.createRef();
 
@@ -117,6 +120,11 @@ class Editor extends React.PureComponent {
 				x: parseInt(this.drag.current.style.left),
 				y: parseInt(this.drag.current.style.top)
 			},
+			size: {
+				width: 200,
+				height: 200,
+			},
+			content: "",
 		};
 		this.notes["note" + this.nextNoteIndex] = newNote;
 
@@ -144,14 +152,14 @@ class Editor extends React.PureComponent {
 		document.addEventListener("mouseup", this.mouseUp);
 
 		/*- Fetch docs -*/
-		console.log(BACKEND_URL + "get-doc");
 		fetch(BACKEND_URL + "get-doc", {
 			method: "GET",
 			headers: {
 				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4",
-				"title": "My Doc"
+				"id": this.id
 			},
 		}).then(async res => await res.json()).then(data => {
+			console.log(data);
 			this.notes = data.notes;
 			this.texts = data.texts;
 			this.canvases = data.canvases;
@@ -322,6 +330,34 @@ class Editor extends React.PureComponent {
 		}
 	}
 
+	/*- Save document -*/
+	saveDocument = () => {
+		let data = {
+			"title": "String",
+			"description": "String",
+		
+			/*- The document's content -*/
+			"texts": this.state.texts,
+			"notes": this.state.notes,
+			"canvases": this.state.canvases,
+		
+			/*- This will be set in backend -*/
+			"owner": "",
+			"id": this.id,
+		};
+		console.log(JSON.stringify(data));
+
+		/*- Send data to backend -*/
+		fetch(BACKEND_URL + "set-doc", {
+			method: "GET",
+			headers: {
+				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4",
+				"document": JSON.stringify(data),
+
+			},
+		});
+	}
+
 	/*- Render -*/
 	render() {
 		return (
@@ -352,7 +388,10 @@ class Editor extends React.PureComponent {
 								<Icon name="profile" size={32} />
 							</button>
 
-							{this.state.placeText.active && <p>aa</p>}
+							{/*- Save document -*/}
+							<button className="toolbar-btn" onClick={this.saveDocument}>
+								<Icon name="arrow-up" size={32} />
+							</button>
 						</div>
 					</div>
 					<div className="editor-content">
@@ -390,13 +429,24 @@ class Editor extends React.PureComponent {
 						
 						{/*- Notes -*/}
 						{Object.keys(this.state.notes).map(key => {
-							const data = this.state.notes[key];
 							return (
 								<Note
 									gridSnap={this.gridSnaps[this.state.snappingIndex]}
-									data={data}
+									data={this.state.notes[key]}
 									key={key}
 									index={key}
+									onChange={(content) => {
+										console.log(key);
+										this.setState({
+											notes: {
+												...this.state.notes,
+												[key]: {
+													...this.state.notes[key],
+													content
+												}
+											}
+										});
+									}}
 									onDelete={() => {
 										delete this.notes[key];
 
