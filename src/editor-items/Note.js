@@ -105,8 +105,15 @@ export class Note extends React.PureComponent {
 
 	/*- Context menu actions -*/
 	addList() {
-		/*- Add " • " to textarea body -*/
-		this.setState({ value: this.state.value + " • ", contextMenu: { active: false } });
+		
+		/*- Check if backslash n is last -*/
+		if (this.state.value.endsWith("\n") || this.state.value.length == 0) {
+			/*- Add " • " to textarea body -*/
+			this.props.data.content = this.state.value + "• ";
+		} else {
+			this.props.data.content = this.state.value + "\n• ";
+		}
+		this.setState({ value: this.props.data.content, contextMenu: { active: false } });
 
 		/*- Focus textarea -*/
 		this.body.current.focus();

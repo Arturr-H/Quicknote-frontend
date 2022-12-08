@@ -163,6 +163,11 @@ class Editor extends React.PureComponent {
 			this.notes = data.notes;
 			this.texts = data.texts;
 			this.canvases = data.canvases;
+
+			this.nextTextIndex = Object.keys(data.texts).length;
+			this.nextNoteIndex = Object.keys(data.notes).length;
+			this.nextCanvasIndex = Object.keys(data.canvases).length;
+
 			this.setState({
 				canvases: data.canvases,
 				notes: data.notes,
@@ -436,7 +441,7 @@ class Editor extends React.PureComponent {
 									key={key}
 									index={key}
 									onChange={(content) => {
-										console.log(key);
+										this.notes[key].content = content;
 										this.setState({
 											notes: {
 												...this.state.notes,
@@ -471,7 +476,7 @@ class Editor extends React.PureComponent {
 									key={key}
 									index={key}
 									onChange={(content) => {
-										console.log(key);
+										this.texts[key].content = content;
 										this.setState({
 											texts: {
 												...this.state.texts,
@@ -483,7 +488,9 @@ class Editor extends React.PureComponent {
 										});
 									}}
 									onDelete={() => {
+										console.log("vd", this.texts)
 										delete this.texts[key];
+										console.log("af", this.texts)
 
 										/*- If no texts, force update because it won't re-render -*/
 										if (Object.keys(this.texts).length === 0) {

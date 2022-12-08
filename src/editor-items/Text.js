@@ -12,6 +12,9 @@ export class Text extends React.PureComponent {
 				y: this.props.data.position.y,
 			},
 			isResizing: false,
+
+			/*- Data -*/
+			value: "",
 		};
 		this.data = this.props.data;
 
