@@ -168,7 +168,7 @@ export class Canvas extends React.PureComponent {
 		});
 	};
 	clearCanvas = () => {
-		let ctx = this.state.canvas.ctx;
+		let ctx = this.state.canvas.ctx || this.canvasRef.current.getContext("2d");
 		ctx.clearRect(0, 0, this.canvasRef.current.width, this.canvasRef.current.height);
 
 		this.setState({

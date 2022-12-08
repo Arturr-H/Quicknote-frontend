@@ -6,6 +6,9 @@ import { Note } from "./editor-items/Note";
 import { Text } from "./editor-items/Text";
 import { Canvas } from "./editor-items/Canvas";
 
+/*- Constants -*/
+const BACKEND_URL = "http://localhost:8080/";
+
 /*- Main -*/
 class Editor extends React.PureComponent {
 	constructor(props) {
@@ -139,6 +142,25 @@ class Editor extends React.PureComponent {
 	componentDidMount() {
 		document.addEventListener("mousemove", this.mouseMove);
 		document.addEventListener("mouseup", this.mouseUp);
+
+		/*- Fetch docs -*/
+		console.log(BACKEND_URL + "get-doc");
+		fetch(BACKEND_URL + "get-doc", {
+			method: "GET",
+			headers: {
+				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4",
+				"title": "My Doc"
+			},
+		}).then(async res => await res.json()).then(data => {
+			this.notes = data.notes;
+			this.texts = data.texts;
+			this.canvases = data.canvases;
+			this.setState({
+				canvases: data.canvases,
+				notes: data.notes,
+				texts: data.texts,
+			})
+		});
 	}
 	componentWillUnmount() {
 		document.removeEventListener("mousemove", this.mouseMove);
@@ -242,6 +264,7 @@ class Editor extends React.PureComponent {
 	createText(selection) {
 		if (selection.size.width > 0 && selection.size.height > 0) {
 			let newText = {
+				content: "",
 				position: {
 					x: selection.position.x,
 					y: selection.position.y,
@@ -391,13 +414,24 @@ class Editor extends React.PureComponent {
 
 						{/*- Texts -*/}
 						{Object.keys(this.state.texts).map(key => {
-							const data = this.state.texts[key];
 							return (
 								<Text
 									gridSnap={this.gridSnaps[this.state.snappingIndex]}
-									data={data}
+									data={this.state.texts[key]}
 									key={key}
 									index={key}
+									onChange={(content) => {
+										console.log(key);
+										this.setState({
+											texts: {
+												...this.state.texts,
+												[key]: {
+													...this.state.texts[key],
+													content
+												}
+											}
+										});
+									}}
 									onDelete={() => {
 										delete this.texts[key];
 

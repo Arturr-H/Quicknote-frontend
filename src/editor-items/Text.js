@@ -10,7 +10,8 @@ export class Text extends React.PureComponent {
 			pos: {
 				x: this.props.data.position.x,
 				y: this.props.data.position.y,
-			}
+			},
+			isResizing: false,
 		};
 		this.data = this.props.data;
 
@@ -21,6 +22,7 @@ export class Text extends React.PureComponent {
 
 		/*- Statics -*/
 		this.onDelete = this.props.onDelete;
+		this.width = this.props.data.size.width;
 
 		/*- Bindings -*/
 	}
@@ -53,6 +55,20 @@ export class Text extends React.PureComponent {
 			});
 		}
 	};
+	onChange = (e) => {
+		this.props.onChange(
+			e.target.value
+		);
+	};
+	onResize = (e) => {
+		this.setState({ isResizing: true });
+	};
+	onResizeEnd = (e) => {
+		this.setState({ isResizing: false });
+
+		/*- Set the width of the note to the width of the text -*/
+		this.width = this.body.current.offsetWidth;
+	};
 
 	/*- Render -*/
 	render() {
@@ -65,7 +81,7 @@ export class Text extends React.PureComponent {
 					left: this.state.pos.x,
 					top: this.state.pos.y,
 
-					width: this.props.data.size.width,
+					width: this.state.isResizing ? "auto" : this.width + 24,
 					height: this.props.data.size.height,
 				}}
 			>
@@ -81,15 +97,20 @@ export class Text extends React.PureComponent {
 						<div></div>
 					</div>
 				</header>
-				<input
-					style={{
-						fontSize: this.props.data.size.height - 120,
-					}}
-					autoFocus
-					ref={this.body}
-					onResize={this.onResize}
-					className="text-body"
-					placeholder="Write something..." />
+				<div className="resize" onMouseDown={this.onResize} onMouseUp={this.onResizeEnd}>
+					<input
+						style={{
+							fontSize: this.props.data.size.height - 120,
+						}}
+						autoFocus
+						ref={this.body}
+						onResize={this.onResize}
+						className="text-body"
+						placeholder="Write something..."
+						value={this.props.data.content}
+						onChange={this.onChange}
+					/>
+				</div>
 			</div>
 		);
 	}
