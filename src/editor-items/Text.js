@@ -52,13 +52,21 @@ export class Text extends React.PureComponent {
 	}
 
 	/*- Event Handlers -*/
-	dragStart = (e) => { this.setState({ dragging: true }); };
+	dragStart = (e) => {
+		this.setState({ dragging: true });
+
+		// Add border to show that it's being dragged
+		this.text.current.style.outline = "3px solid rgb(97, 195, 84)";
+	};
 	dragEnd = (e) => {
 		this.setState({ dragging: false });
 		this.onChange(false, {
 			x: this.state.pos.x,
 			y: this.state.pos.y
 		}, false);
+
+		// Remove border
+		this.text.current.style.outline = "none";
 	};
 	dragMove = (e) => {
 		if (this.state.dragging) {

@@ -63,10 +63,18 @@ export class Note extends React.PureComponent {
 	}
 
 	/*- Event Handlers -*/
-	dragStart = (_) => { this.setState({ dragging: true }); };
+	dragStart = (_) => {
+		this.setState({ dragging: true });
+	
+		// Add border to show that it's being dragged
+		this.note.current.style.outline = "3px solid rgb(97, 195, 84)";
+	};
 	dragEnd = (_) => {
 		this.setState({ dragging: false });
 		this.onChange(false, this.state.pos, false);
+
+		// Remove border
+		this.note.current.style.outline = "none";
 	};
 	dragMove = (e) => {
 		if (this.state.dragging) {

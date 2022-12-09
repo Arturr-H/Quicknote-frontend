@@ -44,7 +44,7 @@ class Editor extends React.PureComponent {
 		this.nextCanvasIndex = 0;
 
 		/*- Static -*/
-		this.gridSnaps = [1, 4, 8, 15, 25, 35, 50];
+		this.gridSnaps = [1, 8, 15, 25, 35, 50];
 		this.maxTextWidth = 800;
 		this.maxTextHeight = 300;
 
