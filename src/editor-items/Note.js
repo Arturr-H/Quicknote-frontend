@@ -63,8 +63,11 @@ export class Note extends React.PureComponent {
 	}
 
 	/*- Event Handlers -*/
-	dragStart = (e) => { this.setState({ dragging: true }); };
-	dragEnd = (e) => { this.setState({ dragging: false }); };
+	dragStart = (_) => { this.setState({ dragging: true }); };
+	dragEnd = (_) => {
+		this.setState({ dragging: false });
+		this.onChange(false, this.state.pos, false);
+	};
 	dragMove = (e) => {
 		if (this.state.dragging) {
 			this.setState({
@@ -107,7 +110,7 @@ export class Note extends React.PureComponent {
 	addList() {
 		
 		/*- Check if backslash n is last -*/
-		if (this.state.value.endsWith("\n") || this.state.value.length == 0) {
+		if (this.state.value.endsWith("\n") || this.state.value.length === 0) {
 			/*- Add " • " to textarea body -*/
 			this.props.data.content = this.state.value + "• ";
 		} else {
@@ -120,11 +123,9 @@ export class Note extends React.PureComponent {
 		
 	}
 
-	/*- Body changes -*/
-	onChange = (e) => {
-		this.props.onChange(
-			e.target.value
-		);
+	/*- On change -*/
+	onChange = (content, position, size) => {
+		this.props.onChange(content, position, size);
 	};
 
 	/*- Render -*/
@@ -192,7 +193,9 @@ export class Note extends React.PureComponent {
 					onBlur={() => this.setState({ focused: false })}
 					spellCheck={this.state.focused}
 					value={this.props.data.content}
-					onChange={this.onChange}
+
+					/*- We need size because textarea will be resized depending on the content -*/
+					onChange={(e) => this.onChange(e.target.value, false, this.state.size)}
 				/>
 			</div>
 		);

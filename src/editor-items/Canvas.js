@@ -24,7 +24,8 @@ export class Canvas extends React.PureComponent {
 			canvas: {
 				drawing: false,
 				ctx: null,
-				color: "#000000"
+				color: "#000000",
+				content: "",
 			}
 		};
 		this.data = this.props.data;
@@ -54,6 +55,18 @@ export class Canvas extends React.PureComponent {
 				this.setState({ contextMenu: { active: false } });
 			}
 		});
+
+		/*- Set canvas position / previous image -*/
+		this.canvasRef.current.style.left = this.data.position.x + "px";
+		this.canvasRef.current.style.top = this.data.position.y + "px";
+
+		/*- Set canvas content / previous image -*/
+		const canvas = this.canvasRef.current.getContext("2d");
+		var image = new Image();
+		image.onload = function() {
+			canvas.drawImage(image, 0, 0);
+		};
+		image.src = this.data.content;
 	}
 	componentWillUnmount() {
 		this.drag.current.removeEventListener("mousedown", this.dragStart);
@@ -63,7 +76,11 @@ export class Canvas extends React.PureComponent {
 
 	/*- Event Handlers -*/
 	dragStart = (e) => { this.setState({ dragging: true }); };
-	dragEnd = (e) => { this.setState({ dragging: false }); };
+	dragEnd = (e) => {
+		/*- Update pos -*/
+		this.setState({ dragging: false });
+		this.onChange(false, this.state.pos, false);
+	};
 	dragMove = (e) => {
 		if (this.state.dragging) {
 			this.setState({
@@ -77,10 +94,14 @@ export class Canvas extends React.PureComponent {
 		}
 	};
 
+	/*- On change -*/
+	onChange = (content, position, size) => {
+		this.props.onChange(content, position, size);
+	};
+
 	/*- Show context menu -*/
 	showContextMenu = (e) => {
 		let { clientX, clientY } = e;
-		console.log(clientX, clientY);
 
 		/*- E will be null sometimes because contextmenu can be
 			triggered from pressing the second action button -*/
@@ -141,6 +162,7 @@ export class Canvas extends React.PureComponent {
 				ctx,
 			}
 		});
+		this.saveCanvasContent();
 	};
 	onMouseMove = (e) => {
 		if (this.state.canvas.drawing) {
@@ -166,6 +188,7 @@ export class Canvas extends React.PureComponent {
 				drawing: false,
 			}
 		});
+		this.saveCanvasContent();
 	};
 	clearCanvas = () => {
 		let ctx = this.state.canvas.ctx || this.canvasRef.current.getContext("2d");
@@ -180,6 +203,7 @@ export class Canvas extends React.PureComponent {
 				active: false,
 			}
 		});
+		this.saveCanvasContent();
 	};
 	changeCanvasColor(color) {
 		this.setState({
@@ -191,6 +215,10 @@ export class Canvas extends React.PureComponent {
 			console.log(this.state.contextMenu.active);
 		});
 	};
+	saveCanvasContent = () => {
+		const content = this.canvasRef.current.toDataURL("image/jpg");
+		this.onChange(content, false, false);
+	}
 
 
 	/*- Render -*/

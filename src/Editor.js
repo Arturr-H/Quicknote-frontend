@@ -258,6 +258,7 @@ class Editor extends React.PureComponent {
 				width: 0,
 				height: 0,
 			},
+			content: "",
 		};
 		this.canvases["canvas" + this.nextCanvasIndex] = newCanvas;
 
@@ -358,7 +359,6 @@ class Editor extends React.PureComponent {
 			headers: {
 				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4",
 				"document": JSON.stringify(data),
-
 			},
 		});
 	}
@@ -440,14 +440,19 @@ class Editor extends React.PureComponent {
 									data={this.state.notes[key]}
 									key={key}
 									index={key}
-									onChange={(content) => {
-										this.notes[key].content = content;
+									onChange={(content, position, size) => {
+										/*- Only update what's changed -*/
+										if (content !== false)  this.notes[key].content = content;
+										if (position !== false) this.notes[key].position = position;
+										if (size !== false)	    this.notes[key].size = size;
+										
 										this.setState({
 											notes: {
 												...this.state.notes,
 												[key]: {
-													...this.state.notes[key],
-													content
+													content: this.notes[key].content,
+													position: this.notes[key].position,
+													size: this.notes[key].size
 												}
 											}
 										});
@@ -475,22 +480,26 @@ class Editor extends React.PureComponent {
 									data={this.state.texts[key]}
 									key={key}
 									index={key}
-									onChange={(content) => {
-										this.texts[key].content = content;
+									onChange={(content, position, size) => {
+										/*- Only update what's changed -*/
+										if (content !== false)  this.texts[key].content = content;
+										if (position !== false) this.texts[key].position = position;
+										if (size !== false)	    this.texts[key].size = size;
+
+										/*- Change state -*/
 										this.setState({
 											texts: {
 												...this.state.texts,
 												[key]: {
-													...this.state.texts[key],
-													content
+													content: this.texts[key].content,
+													position: this.texts[key].position,
+													size: this.texts[key].size
 												}
 											}
 										});
 									}}
 									onDelete={() => {
-										console.log("vd", this.texts)
 										delete this.texts[key];
-										console.log("af", this.texts)
 
 										/*- If no texts, force update because it won't re-render -*/
 										if (Object.keys(this.texts).length === 0) {
@@ -513,6 +522,23 @@ class Editor extends React.PureComponent {
 									data={data}
 									key={key}
 									index={key}
+									onChange={(content, position, size) => {
+										/*- Only update what's changed -*/
+										if (content !== false)  this.canvases[key].content = content;
+										if (position !== false) this.canvases[key].position = position;
+										if (size !== false)	    this.canvases[key].size = size;
+
+										this.setState({
+											canvases: {
+												...this.state.canvases,
+												[key]: {
+													content: this.canvases[key].content,
+													position: this.canvases[key].position,
+													size: this.canvases[key].sizes
+												}
+											}
+										});
+									}}
 									onDelete={() => {
 										delete this.canvases[key];
 
