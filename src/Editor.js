@@ -31,6 +31,7 @@ class Editor extends React.PureComponent {
 			},
 
 			snappingIndex: 0,
+			gridSnap: 1,
 
 			texts: {},
 			notes: {},
@@ -44,9 +45,11 @@ class Editor extends React.PureComponent {
 		this.nextCanvasIndex = 0;
 
 		/*- Static -*/
-		this.gridSnaps = [1, 8, 15, 25, 35, 50];
+		this.gridSnaps = [1, 2, 4, 8, 16, 32];
 		this.maxTextWidth = 800;
 		this.maxTextHeight = 300;
+		this.title = "Untitled";
+		this.description = "No description";
 
 		/*- Get id from url -*/
 		this.id = window.location.pathname.split("/")[2];
@@ -68,10 +71,17 @@ class Editor extends React.PureComponent {
 
 	/*- Increment Grid Snap -*/
 	incrementGridSnap() {
+		console.log(this.gridSnaps[this.state.snappingIndex]);
 		if (this.state.snappingIndex < this.gridSnaps.length - 1) {
-			this.setState({ snappingIndex: this.state.snappingIndex + 1 });
+			this.setState({
+				snappingIndex: this.state.snappingIndex + 1,
+				gridSnap: this.gridSnaps[this.state.snappingIndex + 1],
+			});
 		}else {
-			this.setState({ snappingIndex: 0 });
+			this.setState({
+				snappingIndex: 0,
+				gridSnap: this.gridSnaps[0],
+			});
 		}
 	}
 
@@ -159,10 +169,11 @@ class Editor extends React.PureComponent {
 				"id": this.id
 			},
 		}).then(async res => await res.json()).then(data => {
-			console.log(data);
 			this.notes = data.notes;
 			this.texts = data.texts;
 			this.canvases = data.canvases;
+			this.title = data.title;
+			this.description = data.description;
 
 			this.nextTextIndex = Object.keys(data.texts).length;
 			this.nextNoteIndex = Object.keys(data.notes).length;
@@ -174,6 +185,8 @@ class Editor extends React.PureComponent {
 				texts: data.texts,
 			})
 		});
+
+
 	}
 	componentWillUnmount() {
 		document.removeEventListener("mousemove", this.mouseMove);
@@ -339,8 +352,8 @@ class Editor extends React.PureComponent {
 	/*- Save document -*/
 	saveDocument = () => {
 		let data = {
-			"title": "String",
-			"description": "String",
+			"title": this.title,
+			"description": this.description,
 		
 			/*- The document's content -*/
 			"texts": this.state.texts,
@@ -351,7 +364,6 @@ class Editor extends React.PureComponent {
 			"owner": "",
 			"id": this.id,
 		};
-		console.log(JSON.stringify(data));
 
 		/*- Send data to backend -*/
 		fetch(BACKEND_URL + "set-doc", {
@@ -372,7 +384,7 @@ class Editor extends React.PureComponent {
 						<div className="toolbar">
 							{/*- Create note -*/}
 							<button className="toolbar-btn" onClick={this.addActiveDocument}>
-								<Icon name="document" size={32} />
+								<Icon name="note" size={32} />
 							</button>
 
 							{/*- Create text -*/}
@@ -380,17 +392,25 @@ class Editor extends React.PureComponent {
 								className={"toolbar-btn" + (this.state.placeText.active ? " active" : "")}
 								onClick={this.activateTextBoxAreaTool}
 							>
-								<Icon name="edit" size={32} />
-							</button>
-
-							{/*- Grid snap size -*/}
-							<button className="toolbar-btn" onClick={this.incrementGridSnap}>
-								<Icon name="category" size={32} />
+								<Icon name="text" size={32} />
 							</button>
 
 							{/*- Create canvas -*/}
 							<button className="toolbar-btn" onClick={this.addCanvas}>
-								<Icon name="profile" size={32} />
+								<Icon name="canvas" size={32} />
+							</button>
+
+							{/*- Grid snap size -*/}
+							<button className="toolbar-btn" onClick={this.incrementGridSnap}>
+								<Icon name={
+									this.state.gridSnap === 1 ? "1x1" :
+									this.state.gridSnap === 2 ? "2x2" :
+									this.state.gridSnap === 4 ? "4x4" :
+									this.state.gridSnap === 8 ? "8x8" :
+									this.state.gridSnap === 16 ? "16x16" :
+									this.state.gridSnap === 32 ? "32x32" :
+									"1x1"
+								} size={32} />
 							</button>
 
 							{/*- Save document -*/}

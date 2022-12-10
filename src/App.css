@@ -452,6 +452,115 @@ main > .main > a { text-decoration: none; }
 	z-index: 101;
 }
 
+/*- Modal -*/
+.modal {
+	border-radius: 0.1rem;
+	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+	background: #f4f4f4;
+	outline: 0.1rem solid #e3e3e3;
+
+	box-sizing: border-box;
+	padding: 1rem;
+
+	display: flex;
+	flex-direction: column;
+
+	width: 60%;
+	height: 40%;
+
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	z-index: 1000;
+
+	animation: modal-in 0.2s ease-in-out;
+}.modal > .modal-content {
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}.modal > .modal-content > div {
+	display: inline-flex;
+	flex-direction: column;
+	width: 100%;
+	gap: 0.4rem;
+}.modal > .modal-content > div > input {
+	font-family: 'Poppins', sans-serif;
+	font-weight: 300;
+	font-size: 1.2rem;
+
+	color: #333;
+	width: 100%;
+	height: 3rem;
+
+	border: 0.1rem solid #ddd;
+	outline: none;
+	border-radius: 0.2rem;
+
+	box-sizing: border-box;
+	padding: 1rem;
+}.modal > .modal-content > div > input:focus {
+	outline: 0.1rem solid #88f;
+}.modal > .modal-content > div > button {
+	font-family: 'Roboto Condensed', sans-serif;
+	font-weight: 800;
+	font-size: 1.2rem;
+
+	color: #fff;
+	background: rgb(153, 224, 144);
+	width: 100%;
+	height: 3rem;
+
+	border: none;
+	outline: none;
+	border-radius: 0.2rem;
+	cursor: pointer;
+}.modal > .modal-content > div > button:hover {
+	background: rgb(153, 224, 144, 0.8);
+}.modal > .modal-content > div > button:active {
+	background: rgb(153, 224, 144, 0.6);
+}.modal-blur {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+
+	background: rgba(241, 247, 250, 0.5);
+	z-index: 999;
+
+	animation: modal-blur-in 0.2s ease-in-out forwards;
+}
+
+/*- Modal animations -*/
+@keyframes modal-in {
+	from {
+		transform: translate(-50%, -50%) scale(0.9);
+		opacity: 0;
+	}
+	to {
+		transform: translate(-50%, -50%) scale(1);
+		opacity: 1;
+	}
+}
+@keyframes modal-blur-in {
+	from {
+		backdrop-filter: blur(0px);
+	}
+	to {
+		backdrop-filter: blur(5px);
+	}
+}
 
 /*- Edtor content -*/
 .editor-content {
