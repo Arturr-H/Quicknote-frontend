@@ -1,23 +1,48 @@
+/*- Variables -*/
+:root {
+	/* --main: #111;
+	--main-1: #222;
+	--main-2: #333;
+	--main-3: #444;
+	--main-4: #555;
+	--main-5: #666;
+
+	--text: #fff;
+	--toolbar-btn: rgb(107, 216, 213); */
+	--main: #fff;
+	--main-1: #eee;
+	--main-2: #ddd;
+	--main-3: #aaa;
+	--main-4: #888;
+	--main-5: #333;
+
+	--text: #000;
+	--toolbar-btn: #fff;
+}
+
 /*- Html elements -*/
 html, body {
 	margin: 0;
 	padding: 0;
-	background: #fff;
+	background: var(--main);
 	overflow-y: hidden;
 
+}
+h1 {
+	color: var(--text);
 }
 
 /*- Navbar -*/
 nav {
 	width: 100vw;
 	height: 4rem;
-	background: #fff;
+	background: var(--main);
 
 	display: flex;
 	flex-direction: row;
 	position: relative;
 
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid var(--main-1);
 }nav > div:first-of-type {
 	flex: 1;
 }nav > div {
@@ -35,7 +60,7 @@ nav {
 nav > div > a.text-link {
 	padding: 0.5rem 1rem;
 
-	color: #000;
+	color: var(--text);
 	border-bottom: none;
 	text-decoration: none;
 	font-family: 'Poppins', sans-serif;
@@ -46,7 +71,7 @@ nav > div > a.text-link {
 	display: block;
 	width: 0;
 	height: 1.5px;
-	background: #000;
+	background: var(--text);
 	transform: translateY(-0.1rem);
 
 	transition: width 0.3s ease;
@@ -83,8 +108,8 @@ main > .main > a { text-decoration: none; }
 	height: 100%;
 	min-height: 12rem;
 	position: relative;
-	background: #f4f4f4;
-	outline: 0.1rem solid #e3e3e3;
+	background: var(--main-1);
+	outline: 0.1rem solid var(--main-2);
 
 	box-sizing: border-box;
 	padding: 1rem;
@@ -108,7 +133,7 @@ main > .main > a { text-decoration: none; }
 	margin: 0;
 	padding: 0;
 	user-select: none;
-	color: #222;
+	color: var(--main-5);
 }.card > .text > p {
 	font-family: 'Poppins', sans-serif;
 	font-weight: 300;
@@ -117,22 +142,22 @@ main > .main > a { text-decoration: none; }
 	margin: 0;
 	padding: 0;
 
-	color: #aaa;
+	color: var(--main-3);
 	user-select: none;
 }.card > footer {
 	width: 100%;
 	height: 2rem;
 
-	border-top: 0.1rem #e3e3e3 solid;
+	border-top: 0.1rem var(--main-2) solid;
 	display: flex;
 	align-items: center;
 }.card > footer > div {
 	display: flex;
 	flex-direction: row;
 }.card > footer > div:hover {
-	background: rgb(236, 236, 236);
+	background: var(--main-2);
 	border-radius: 0.2rem;
-	outline: 2px solid rgb(236, 236, 236);
+	outline: 2px solid var(--main-2);
 }.card > footer > div > p {
 	font-family: 'Poppins', sans-serif;
 	font-weight: 300;
@@ -141,7 +166,7 @@ main > .main > a { text-decoration: none; }
 	margin: 0;
 	padding: 0;
 
-	color: #aaa;
+	color: var(--main-3);
 	cursor:default;
 }
 
@@ -149,7 +174,7 @@ main > .main > a { text-decoration: none; }
 .vertical-rule {
 	width: 0.1rem;
 	height: 60%;
-	background: #e3e3e3;
+	background: var(--main-2);
 
 	margin-left: 0.5rem;
 	margin-right: 0.5rem;
@@ -166,7 +191,7 @@ main > .main > a { text-decoration: none; }
 	width: 100%;
 	height: 100%;
 	border-radius: 1rem;
-	background: #fff;
+	background: var(--main);
 
 	position: relative;
 	display: inline-flex;
@@ -193,13 +218,13 @@ main > .main > a { text-decoration: none; }
 
 	cursor: pointer;
 
-	background: #fff;
+	background: var(--toolbar-btn);
 	border-radius: 0.5rem;
-	border: 0.1rem solid #eee;
+	border: 0.1rem solid var(--main-1);
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 	transition: background 0.04s ease;
 }.toolbar > .toolbar-btn:hover {
-	background: rgb(236, 236, 236);
+	background: var(--main-1);
 }.toolbar > .toolbar-btn.active {
 	box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1);
 
@@ -211,7 +236,7 @@ main > .main > a { text-decoration: none; }
 	margin: 0;
 	padding: 0;
 
-	color: #aaa;
+	color: var(--main-3);
 	cursor:default;
 }.toolbar > .toolbar-btn.behind {
 	position: absolute;
@@ -223,10 +248,10 @@ main > .main > a { text-decoration: none; }
 	width: min-content;
 	height: min-content;
 
-	background: #fff;
+	background: var(--main);
 	box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
 	border-radius: 0.75rem;
-	border: 0.1rem solid #eee;
+	border: 0.1rem solid var(--main-2);
 
 	left: 30rem;
 	top: 20rem;
@@ -253,6 +278,8 @@ main > .main > a { text-decoration: none; }
 	resize: horizontal;
 	max-width: 30rem;
 	max-height: 30rem;
+	background: var(--main);
+	color: var(--text);
 }.item > header {
 	display: flex;
 	flex-direction: row;
@@ -272,7 +299,7 @@ main > .main > a { text-decoration: none; }
 	width: 2rem;
 	height: 0.1rem;
 
-	background: #eee;
+	background: var(--main-1);
 	border-radius: 0.1rem;
 }.item > header > .actions {
 	display: inline-flex;
@@ -320,10 +347,10 @@ main > .main > a { text-decoration: none; }
 	padding-top: 0.1rem;
 	padding-bottom: 0.1rem;
 
-	background: #fff;
+	background: var(--main);
 	box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
 	border-radius: 0.75rem;
-	border: 0.1rem solid #eee;
+	border: 0.1rem solid var(--main-1);
 
 	z-index: 20;
 }.contextmenu > .context-menu-item {
@@ -336,7 +363,7 @@ main > .main > a { text-decoration: none; }
 	padding-top: 0.3rem;
 	padding-bottom: 0.3rem;
 }.contextmenu > .context-menu-item > button.context-button {
-	background: #fff;
+	background: var(--main);
 	border: none;
 
 	box-sizing: border-box;
@@ -347,18 +374,18 @@ main > .main > a { text-decoration: none; }
 	font-weight: 300;
 	font-size: 0.8rem;
 
-	color: #aaa;
+	color: var(--main-2);
 	width: 100%;
 	text-align: left;
 
 	margin-left: 0.2rem;
 	border-radius: 0.2rem;
 }.contextmenu > .context-menu-item > button.context-button:hover {
-	color: #fff;
+	color: var(--main);
 	background: rgb(166, 209, 235);
 }.contextmenu > .context-menu-item > button.context-button:active {
-	color: #333;
-	background: #ddd;
+	color: var(--main-5);
+	background: var(--main-1);
 }.contextmenu > .context-menu-item > button.context-button.colored-red:hover {
 	background: rgb(237, 106, 95) !important;
 }.contextmenu > .context-menu-item > .color-dot {
@@ -366,12 +393,12 @@ main > .main > a { text-decoration: none; }
 	aspect-ratio: 1;
 
 	border-radius: 0.2rem;
-	outline: 0.1rem solid rgb(86, 86, 86);
+	outline: 0.1rem solid var(--main-5);
 }.context-menu-separator {
 	width: 100%;
 	height: 0.1rem;
 
-	background: #eee;
+	background: var(--main-1);
 	border-radius: 0.1rem;
 
 	margin-top: 0.4rem;
@@ -394,9 +421,10 @@ main > .main > a { text-decoration: none; }
 	font-family: 'Roboto Condensed', sans-serif;
 	font-weight: 800;
 
-	color: #333;
+	color: var(--text);
 	text-align: center;
 	resize: both !important;
+	background: var(--main);
 }.item.text > header > .stack, .item.text > header > .actions {
 	position: absolute;
 	display: none;
@@ -426,7 +454,7 @@ main > .main > a { text-decoration: none; }
 
 	box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
 	border-radius: 0.75rem;
-	border: 0.2rem dashed #ddd;
+	border: 0.2rem dashed var(--main-2);
 	backdrop-filter: blur(5px);
 
 	left: 30rem;
@@ -459,8 +487,8 @@ main > .main > a { text-decoration: none; }
 .modal {
 	border-radius: 0.1rem;
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
-	background: #f4f4f4;
-	outline: 0.1rem solid #e3e3e3;
+	background: var(--main-1);
+	outline: 0.1rem solid var(--main-2);
 
 	box-sizing: border-box;
 	padding: 1rem;
@@ -502,11 +530,11 @@ main > .main > a { text-decoration: none; }
 	font-weight: 300;
 	font-size: 1.2rem;
 
-	color: #333;
+	color: var(--main-5);
 	width: 100%;
 	height: 3rem;
 
-	border: 0.1rem solid #ddd;
+	border: 0.1rem solid var(--main-2);
 	outline: none;
 	border-radius: 0.2rem;
 
@@ -519,7 +547,7 @@ main > .main > a { text-decoration: none; }
 	font-weight: 800;
 	font-size: 1.2rem;
 
-	color: #fff;
+	color: var(--main);
 	background: rgb(153, 224, 144);
 	width: 100%;
 	height: 3rem;
@@ -539,7 +567,6 @@ main > .main > a { text-decoration: none; }
 	width: 100%;
 	height: 100%;
 
-	background: rgba(241, 247, 250, 0.5);
 	z-index: 999;
 
 	animation: modal-blur-in 0.2s ease-in-out forwards;
@@ -589,7 +616,7 @@ main > .main > a { text-decoration: none; }
 	flex-direction: column;
 
 	border-radius: 0.75rem;
-	background: #fff;
+	background: var(--main);
 	box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
 	overflow: hidden;
 }.toast > .content-container {
@@ -607,7 +634,7 @@ main > .main > a { text-decoration: none; }
 	font-weight: 800;
 	font-size: 1.2rem;
 
-	color: #333;
+	color: var(--main-5);
 	text-align: center;
 	margin: 0;
 	padding: 0;
@@ -620,8 +647,8 @@ main > .main > a { text-decoration: none; }
 	font-weight: 800;
 	font-size: 1.2rem;
 
-	color: #fff;
-	background: #fff;
+	color: var(--main);
+	background: var(--main);
 	aspect-ratio: 1;
 
 	border: none;
@@ -693,7 +720,7 @@ main > .main > a { text-decoration: none; }
 	border-radius: 0.5rem;
 	cursor: pointer;
 
-	background: #eee;
+	background: var(--main-1);
 	box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
 }.save-button:hover {
 	background: rgba(206, 206, 206, 0.8);
@@ -701,12 +728,19 @@ main > .main > a { text-decoration: none; }
 	background: rgba(210, 210, 210, 0.6);
 }.save-button > * {
 	opacity: 0.5;
+}.save-button.warning {
+	animation: warning 2s ease-in-out forwards;
+}
+
+@keyframes warning {
+	from { background: rgb(237, 106, 95); }
+	to { background: var(--main-1); }
 }
 
 .hr {
 	width: 100%;
 	height: 0.1rem;
-	background: #eee;
+	background: var(--main-1);
 
 	margin-top: 0.2rem;
 	margin-bottom: 0.2rem;
@@ -714,7 +748,7 @@ main > .main > a { text-decoration: none; }
 
 /*- Edtor content -*/
 .editor-content {
-	background: #f8f8f8;
+	background: var(--main-1);
 	width: 100%;
 	height: 100%;
 
@@ -767,4 +801,5 @@ main > .main > a { text-decoration: none; }
 	padding: 0;
 
 	user-select: none;
+	color: var(--text);
 }

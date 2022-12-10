@@ -13,7 +13,8 @@ class App extends React.PureComponent {
 		/*- Changeable -*/
 		this.state = {
 			docs: [],
-			modal: false
+			modal: false,
+			darkMode: this.getCookie("darkMode") === "true" ? true : false,
 		};
 
 		/*- Static -*/
@@ -30,6 +31,8 @@ class App extends React.PureComponent {
 		}).then(async res => {
 			this.setState({ docs: await res.json() });
 		});
+
+		this.changeDarkMode(this.state.darkMode);
 	}
 
 	/*- Methods -*/
@@ -59,6 +62,41 @@ class App extends React.PureComponent {
 			console.log(this.state.modal);
 		});
 	}
+
+	/*- Dark mode toggle -*/
+	changeDarkMode = (to) => {
+		/*- Css variables -*/
+		if (to) {
+			document.documentElement.style.setProperty("--main", "#111");
+			document.documentElement.style.setProperty("--main-1", "#222");
+			document.documentElement.style.setProperty("--main-2", "#333");
+			document.documentElement.style.setProperty("--main-3", "#444");
+			document.documentElement.style.setProperty("--main-4", "#555");
+			document.documentElement.style.setProperty("--main-5", "#666");
+			document.documentElement.style.setProperty("--text", "#fff");
+			document.documentElement.style.setProperty("--toolbar-btn", "rgb(107, 216, 213)");
+		}else {
+			document.documentElement.style.setProperty("--main", "#fff");
+			document.documentElement.style.setProperty("--main-1", "#eee");
+			document.documentElement.style.setProperty("--main-2", "#ddd");
+			document.documentElement.style.setProperty("--main-3", "#aaa");
+			document.documentElement.style.setProperty("--main-4", "#888");
+			document.documentElement.style.setProperty("--main-5", "#333");
+			document.documentElement.style.setProperty("--text", "#000");
+			document.documentElement.style.setProperty("--toolbar-btn", "#fff");
+		};
+	};
+	/*- Get cookie -*/
+	getCookie = (name) => {
+		let nameEQ = name + "=";
+		let ca = document.cookie.split(';');
+		for(let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+		}
+		return null;
+	};
 
 	render() {
 		return (
@@ -193,10 +231,12 @@ class Icon extends React.PureComponent {
 			"cross"         : require("./icons/cross.svg").default,
 			"delete"        : require("./icons/delete.svg").default,
 			"edit"          : require("./icons/edit.svg").default,
+			"moon"          : require("./icons/moon.svg").default,
 			"home"          : require("./icons/home.svg").default,
 			"plus"          : require("./icons/plus.svg").default,
 			"note"          : require("./icons/note.svg").default,
 			"text"          : require("./icons/text.svg").default,
+			"sun"           : require("./icons/sun.svg").default,
 			"32x32"			: require("./icons/32x32.svg").default,
 			"16x16"			: require("./icons/16x16.svg").default,
 			"8x8"  			: require("./icons/8x8.svg").default,
@@ -270,7 +310,7 @@ class CreateDocument extends React.PureComponent {
 						{/*- Container -*/}
 						<div className="modal-target-selector">
 							{/*- Title -*/}
-							<input className="modal-target-selector" placeholder="Title..." type="text" name="name" value={this.state.name} onChange={this._change_title} />
+							<input className="modal-target-selector" placeholder="Title..." type="sun" name="name" value={this.state.name} onChange={this._change_title} />
 
 							{/*- Description -*/}
 							<input className="modal-target-selector" placeholder="Description..." type="text" name="description" value={this.state.description} onChange={this._change_description} />

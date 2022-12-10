@@ -44,6 +44,8 @@ class Editor extends React.PureComponent {
 
 			saving: false,
 			saved: true,
+
+			darkMode: this.getCookie("darkMode") === "true" ? true : false,
 		};
 		this.notes = {};
 		this.nextNoteIndex = 0;
@@ -169,6 +171,7 @@ class Editor extends React.PureComponent {
 	componentDidMount() {
 		document.addEventListener("mousemove", this.mouseMove);
 		document.addEventListener("mouseup", this.mouseUp);
+		this.changeDarkMode(this.state.darkMode);
 
 		/*- Fetch docs -*/
 		fetch(BACKEND_URL + "get-doc", {
@@ -410,6 +413,64 @@ class Editor extends React.PureComponent {
 		});
 	};
 
+	/*- Dark mode toggle -*/
+	toggleNightMode = () => {
+		this.setState({
+			darkMode: !this.state.darkMode,
+		}, () => {
+			this.changeDarkMode(this.state.darkMode);
+
+			/*- Save cookie -*/
+			this.setCookie("darkMode", this.state.darkMode, 365);
+
+		});
+	}
+	changeDarkMode = (to) => {
+		/*- Css variables -*/
+		if (to) {
+			document.documentElement.style.setProperty("--main", "#111");
+			document.documentElement.style.setProperty("--main-1", "#222");
+			document.documentElement.style.setProperty("--main-2", "#333");
+			document.documentElement.style.setProperty("--main-3", "#444");
+			document.documentElement.style.setProperty("--main-4", "#555");
+			document.documentElement.style.setProperty("--main-5", "#666");
+			document.documentElement.style.setProperty("--text", "#fff");
+			document.documentElement.style.setProperty("--toolbar-btn", "rgb(107, 216, 213)");
+		}else {
+			document.documentElement.style.setProperty("--main", "#fff");
+			document.documentElement.style.setProperty("--main-1", "#eee");
+			document.documentElement.style.setProperty("--main-2", "#ddd");
+			document.documentElement.style.setProperty("--main-3", "#aaa");
+			document.documentElement.style.setProperty("--main-4", "#888");
+			document.documentElement.style.setProperty("--main-5", "#333");
+			document.documentElement.style.setProperty("--text", "#000");
+			document.documentElement.style.setProperty("--toolbar-btn", "#fff");
+		};
+	};
+
+	/*- Change cookie -*/
+	setCookie = (name, value, days) => {
+		let expires = "";
+		if (days) {
+			let date = new Date();
+			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+			expires = "; expires=" + date.toUTCString() + "; SameSite=None; Secure";
+		}
+		document.cookie = name + "=" + (value || "") + expires + "; path=/";
+	};
+
+	/*- Get cookie -*/
+	getCookie = (name) => {
+		let nameEQ = name + "=";
+		let ca = document.cookie.split(';');
+		for(let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+		}
+		return null;
+	};
+
 	/*- Render -*/
 	render() {
 		return (
@@ -447,6 +508,8 @@ class Editor extends React.PureComponent {
 								<Icon name="canvas" size={32} />
 							</button>
 
+							<Hr />
+
 							{/*- Grid snap size -*/}
 							<button title="Change grid snap size" className="toolbar-btn" onClick={this.incrementGridSnap}>
 								<Icon name={
@@ -457,6 +520,13 @@ class Editor extends React.PureComponent {
 									this.state.gridSnap === 16 ? "16x16" :
 									this.state.gridSnap === 32 ? "32x32" :
 									"1x1"
+								} size={32} />
+							</button>
+
+							{/*- Change dark / light mode -*/}
+							<button title="Change light / dark mode" className="toolbar-btn" onClick={this.toggleNightMode}>
+								<Icon name={
+									this.state.darkMode === true ? "moon" : "sun"
 								} size={32} />
 							</button>
 
@@ -660,11 +730,8 @@ class SaveButton extends React.PureComponent {
 	render() {
 		return (
 			<button
-				className="save-button"
+				className={this.props.saved ? "save-button" : "save-button warning"}
 				onClick={this.props.onClick}
-				style={{
-					background: this.props.saved ? '#eee' : "rgb(237, 106, 95)"
-				}}
 			>
 				{this.props.loading ? <Icon size={40} name="" /> : this.props.saved ? <Icon name="check" /> : <Icon size={40} name="warning" />}
 			</button>
