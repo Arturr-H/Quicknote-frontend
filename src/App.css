@@ -3,6 +3,8 @@ html, body {
 	margin: 0;
 	padding: 0;
 	background: #fff;
+	overflow-y: hidden;
+
 }
 
 /*- Navbar -*/
@@ -57,6 +59,7 @@ main {
 	display: flex;
 	flex-direction: column;
 	height: 100vh;
+	overflow: hidden;
 }main > .main {
 	box-sizing: border-box;
 	position: relative;
@@ -65,9 +68,9 @@ main {
 	grid-template-rows: repeat(auto-fit, min(12rem));
 	grid-gap: 1rem;
 	padding: 1rem;
+	overflow: hidden;
 
 	flex: 1;
-	overflow-y: scroll;
 }
 
 /*- Card -*/
@@ -562,6 +565,109 @@ main > .main > a { text-decoration: none; }
 	}
 }
 
+/*- Toast -*/
+.toast {
+	position: absolute;
+	bottom: 2rem;
+	left: 50%;
+	transform: translateX(-50%);
+
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+
+	z-index: 1000;
+	animation: toast-in 5s ease-in-out forwards;
+
+	width: 18rem;
+	height: 3rem;
+	box-sizing: border-box;
+
+	padding-bottom: 0;
+
+	display: flex;
+	flex-direction: column;
+
+	border-radius: 0.75rem;
+	background: #fff;
+	box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}.toast > .content-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+
+	box-sizing: border-box;
+	padding: 0.5rem 1rem;
+	padding-right: 0.5rem;
+}.toast > .content-container > p {
+	font-family: 'Roboto Condensed', sans-serif;
+	font-weight: 800;
+	font-size: 1.2rem;
+
+	color: #333;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+
+	flex: 1;
+	text-align: left;
+	display: block;
+}.toast > .content-container > button {
+	font-family: 'Roboto Condensed', sans-serif;
+	font-weight: 800;
+	font-size: 1.2rem;
+
+	color: #fff;
+	background: #eee;
+	aspect-ratio: 1;
+
+	border: none;
+	outline: none;
+	border-radius: 0.2rem;
+	cursor: pointer;
+}.toast > .content-container > button:hover {
+	background: rgba(206, 206, 206, 0.8);
+}.toast > .content-container > button:active {
+	background: rgba(210, 210, 210, 0.6);
+}.toast > .progress-bar {
+	width: 0%;
+	height: 0.2rem;
+	background: rgb(237, 106, 95);
+
+	animation: toast-progress 4.75s linear forwards;
+}
+
+/*- Toast animations -*/
+@keyframes toast-in {
+	0% {
+		transform: translate(-50%, 50%);
+		opacity: 0;
+	}
+	5% {
+		transform: translate(-50%, 0);
+		opacity: 1;
+	}
+	95% {
+		transform: translate(-50%, 0);
+		opacity: 1;
+	}
+	100% {
+		transform: translate(-50%, 50%);
+		opacity: 0;
+	}
+}
+@keyframes toast-progress {
+	0% {
+		width: 0%;
+	}
+	100% {
+		width: 100%;
+	}
+}
+
 /*- Edtor content -*/
 .editor-content {
 	background: #f8f8f8;
@@ -569,7 +675,8 @@ main > .main > a { text-decoration: none; }
 	height: 100%;
 
 	box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1);
-	overflow: scroll;
+	overflow-y: hidden;
+
 }
 
 .main-wrapper {

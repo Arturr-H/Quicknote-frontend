@@ -20,6 +20,7 @@ export class Text extends React.PureComponent {
 				actions: [],
 				active: false
 			},
+			font_size: this.props.data.size.font_size,
 
 			/*- Data -*/
 			value: "",
@@ -43,6 +44,14 @@ export class Text extends React.PureComponent {
 		this.drag.current.addEventListener("mousedown", this.dragStart);
 		window.addEventListener("mouseup", this.dragEnd);
 		window.addEventListener("mousemove", this.dragMove);
+		document.addEventListener("mousedown", (e) => {
+			const CLICKABLE = ["context-menu-item", "context-menu-item noborder", "contextmenu", "icon", "context-button"];
+
+			/*- Remove contextmenu if not click on it -*/
+			if (!CLICKABLE.includes(e.target.className.split(" ")[0])) {
+				this.setState({ contextMenu: { active: false } });
+			}
+		});
 	}
 
 	componentWillUnmount() {
@@ -85,21 +94,6 @@ export class Text extends React.PureComponent {
 			content, position, size
 		);
 	};
-	onResize = (e) => {
-		this.setState({ isResizing: true });
-	};
-	onResizeEnd = (e) => {
-		this.setState({ isResizing: false });
-
-		/*- Set the width of the note to the width of the text -*/
-		this.width = this.body.current.offsetWidth;
-
-		/*- Update the note -*/
-		this.onChange(false, false, {
-			width: this.width,
-			height: this.body.current.offsetHeight
-		});
-	};
 
 	/*- Show context menu -*/
 	showContextMenu = (e) => {
@@ -118,9 +112,28 @@ export class Text extends React.PureComponent {
 				x: clientX,
 				y: clientY,
 				actions: [
+					{ name: "32px", icon: "text", action: () => this.changeFontSize(32) },
+					{ name: "64px", icon: "text", action: () => this.changeFontSize(64) },
+					{ name: "82px", icon: "text", action: () => this.changeFontSize(82) },
+					{ name: "128px", icon: "text", action: () => this.changeFontSize(128) },
+					{ separator: true },
 					{ name: "Delete", action: this.onDelete, icon: "delete", tintColor: "red" },
 				],
 			}
+		});
+	};
+	changeFontSize = (size) => {
+		this.setState({
+			contextMenu: {
+				active: false
+			},
+			font_size: size
+		});
+		
+		this.onChange(false, false, {
+			width: this.props.data.size.width,
+			height: this.props.data.size.height,
+			font_size: size
 		});
 	};
 
@@ -181,20 +194,17 @@ export class Text extends React.PureComponent {
 						<div></div>
 					</div>
 				</header>
-				<div className="resize" onMouseDown={this.onResize} onMouseUp={this.onResizeEnd}>
 					<input
 						style={{
-							fontSize: this.props.data.size.height - 120,
+							fontSize: this.state.font_size + "px"
 						}}
 						autoFocus
 						ref={this.body}
-						onResize={this.onResize}
 						className="text-body"
 						placeholder="Write something..."
 						value={this.props.data.content}
 						onChange={(e) => this.onChange(e.target.value, false, false)}
 					/>
-				</div>
 			</div>
 		);
 	}

@@ -5,6 +5,7 @@ import { Icon } from "./App";
 import { Note } from "./editor-items/Note";
 import { Text } from "./editor-items/Text";
 import { Canvas } from "./editor-items/Canvas";
+import { Toast } from "./components/Toast";
 
 /*- Constants -*/
 const BACKEND_URL = "http://localhost:8080/";
@@ -28,6 +29,10 @@ class Editor extends React.PureComponent {
 			placeText: {
 				active: false,
 				hasMoved: false,
+			},
+			toast: {
+				active: true,
+				message: "",
 			},
 
 			snappingIndex: 0,
@@ -299,6 +304,7 @@ class Editor extends React.PureComponent {
 				size: {
 					width: selection.size.width,
 					height: selection.size.height,
+					font_size: 20,
 				},
 			};
 
@@ -577,6 +583,12 @@ class Editor extends React.PureComponent {
 						
 					</div>
 				</div>
+
+				{/*- Toast -*/}
+				{this.state.toast.active ? <Toast
+					message={this.state.toast.message}
+					onClose={() => this.setState({ toast: { show: false, message: '' } })}
+				/> : null}
 			</main>
 		)
 	}

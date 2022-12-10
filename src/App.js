@@ -183,7 +183,7 @@ class Icon extends React.PureComponent {
 		this.right = this.props.right || false;
 		this.size = this.props.size || 24;
 		this.icons = {
-			"document-clear": require("./icons/document-clear.svg").default,
+			"document-clear": require("./icons_/document-clear.svg").default,
 			"more-circle"   : require("./icons/more-circle.svg").default,
 			"edit-square"   : require("./icons/edit-square.svg").default,
 			"time-square"   : require("./icons_/time-square.svg").default,
@@ -194,7 +194,7 @@ class Icon extends React.PureComponent {
 			"document"      : require("./icons_/note.svg").default,
 			"canvas"        : require("./icons_/canvas.svg").default,
 			"search"        : require("./icons/search.svg").default,
-			"delete"        : require("./icons/delete.svg").default,
+			"delete"        : require("./icons_/delete.svg").default,
 			"filter"        : require("./icons/filter.svg").default,
 			"folder"        : require("./icons/folder.svg").default,
 			"edit"          : require("./icons_/edit.svg").default,
