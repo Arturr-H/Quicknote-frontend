@@ -32,7 +32,7 @@ class Editor extends React.PureComponent {
 			},
 			toast: {
 				active: true,
-				message: "",
+				message: "Welcome back!",
 			},
 
 			snappingIndex: 0,
@@ -41,6 +41,9 @@ class Editor extends React.PureComponent {
 			texts: {},
 			notes: {},
 			canvases: {},
+
+			saving: false,
+			saved: true,
 		};
 		this.notes = {};
 		this.nextNoteIndex = 0;
@@ -142,6 +145,7 @@ class Editor extends React.PureComponent {
 			content: "",
 		};
 		this.notes["note" + this.nextNoteIndex] = newNote;
+		this.makeUnsaved();
 
 		/*- Add Note -*/
 		setTimeout(() => {
@@ -290,6 +294,7 @@ class Editor extends React.PureComponent {
 
 		/*- Increment Canvas Index -*/
 		this.nextCanvasIndex++;
+		this.makeUnsaved();
 	}
 
 	/*- Create text -*/
@@ -320,6 +325,7 @@ class Editor extends React.PureComponent {
 
 			/*- Increment Text Index -*/
 			this.nextTextIndex++;
+			this.makeUnsaved();
 		}
 	}
 
@@ -356,7 +362,7 @@ class Editor extends React.PureComponent {
 	}
 
 	/*- Save document -*/
-	saveDocument = () => {
+	saveDocument = (possibleCallback) => {
 		let data = {
 			"title": this.title,
 			"description": this.description,
@@ -378,8 +384,31 @@ class Editor extends React.PureComponent {
 				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4",
 				"document": JSON.stringify(data),
 			},
+		}).then(() => {
+			this.showToast("Document saved!");
+			possibleCallback && possibleCallback();
+		});
+		this.setState({
+			saved: true,
 		});
 	}
+
+	/*- Save handling -*/
+	makeUnsaved = () => {
+		this.setState({
+			saved: false,
+		});
+	};
+
+	/*- Toast -*/
+	showToast = (message) => {
+		this.setState({
+			toast: {
+				active: true,
+				message,
+			}
+		});
+	};
 
 	/*- Render -*/
 	render() {
@@ -388,13 +417,25 @@ class Editor extends React.PureComponent {
 				<div className="main-wrapper">
 					<div className="toolbar-positioner">
 						<div className="toolbar">
+							{/*- Go home -*/}
+							<button title="Home" className="toolbar-btn" onClick={() => {
+								this.saveDocument(() => {
+									window.open("/", "_self");
+								});
+							}}>
+								<Icon name="home" size={32} />
+							</button>
+
+							<Hr />
+
 							{/*- Create note -*/}
-							<button className="toolbar-btn" onClick={this.addActiveDocument}>
+							<button title="Create a note element" className="toolbar-btn" onClick={this.addActiveDocument}>
 								<Icon name="note" size={32} />
 							</button>
 
 							{/*- Create text -*/}
 							<button
+								title="Create a text element"
 								className={"toolbar-btn" + (this.state.placeText.active ? " active" : "")}
 								onClick={this.activateTextBoxAreaTool}
 							>
@@ -402,12 +443,12 @@ class Editor extends React.PureComponent {
 							</button>
 
 							{/*- Create canvas -*/}
-							<button className="toolbar-btn" onClick={this.addCanvas}>
+							<button title="Create a canvas" className="toolbar-btn" onClick={this.addCanvas}>
 								<Icon name="canvas" size={32} />
 							</button>
 
 							{/*- Grid snap size -*/}
-							<button className="toolbar-btn" onClick={this.incrementGridSnap}>
+							<button title="Change grid snap size" className="toolbar-btn" onClick={this.incrementGridSnap}>
 								<Icon name={
 									this.state.gridSnap === 1 ? "1x1" :
 									this.state.gridSnap === 2 ? "2x2" :
@@ -419,9 +460,11 @@ class Editor extends React.PureComponent {
 								} size={32} />
 							</button>
 
+							<Hr />
+
 							{/*- Save document -*/}
-							<button className="toolbar-btn" onClick={this.saveDocument}>
-								<Icon name="arrow-up" size={32} />
+							<button title="Save" className="toolbar-btn" onClick={this.saveDocument}>
+								<Icon name="check" size={32} />
 							</button>
 						</div>
 					</div>
@@ -482,6 +525,7 @@ class Editor extends React.PureComponent {
 												}
 											}
 										});
+										this.makeUnsaved();
 									}}
 									onDelete={() => {
 										delete this.notes[key];
@@ -493,6 +537,7 @@ class Editor extends React.PureComponent {
 
 										/*- Cause re-render -*/
 										this.setState({ notes: this.notes });
+										this.makeUnsaved();
 									}}
 								/>
 							)
@@ -523,6 +568,7 @@ class Editor extends React.PureComponent {
 												}
 											}
 										});
+										this.makeUnsaved();
 									}}
 									onDelete={() => {
 										delete this.texts[key];
@@ -534,6 +580,7 @@ class Editor extends React.PureComponent {
 
 										/*- Cause re-render -*/
 										this.setState({ texts: this.texts });
+										this.makeUnsaved();
 									}}
 								/>
 							)
@@ -564,6 +611,7 @@ class Editor extends React.PureComponent {
 												}
 											}
 										});
+										this.makeUnsaved();
 									}}
 									onDelete={() => {
 										delete this.canvases[key];
@@ -575,6 +623,7 @@ class Editor extends React.PureComponent {
 
 										/*- Cause re-render -*/
 										this.setState({ canvases: this.canvases });
+										this.makeUnsaved();
 									}}
 								/>
 							)
@@ -584,12 +633,41 @@ class Editor extends React.PureComponent {
 					</div>
 				</div>
 
+				{/*- Save -*/}
+				<SaveButton
+					onClick={this.saveDocument}
+					saved={this.state.saved}
+				/>
+
 				{/*- Toast -*/}
 				{this.state.toast.active ? <Toast
 					message={this.state.toast.message}
 					onClose={() => this.setState({ toast: { show: false, message: '' } })}
 				/> : null}
 			</main>
+		)
+	}
+}
+
+function Hr() {
+	return (
+		<div className="hr">
+		</div>
+	)
+}
+
+class SaveButton extends React.PureComponent {
+	render() {
+		return (
+			<button
+				className="save-button"
+				onClick={this.props.onClick}
+				style={{
+					background: this.props.saved ? '#eee' : "rgb(237, 106, 95)"
+				}}
+			>
+				{this.props.loading ? <Icon size={40} name="" /> : this.props.saved ? <Icon name="check" /> : <Icon size={40} name="warning" />}
+			</button>
 		)
 	}
 }
