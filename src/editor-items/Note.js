@@ -29,6 +29,7 @@ export class Note extends React.PureComponent {
 
 			/*- Data -*/
 			value: "",
+			replacedContent: "",
 		};
 		this.data = this.props.data;
 
@@ -117,20 +118,26 @@ export class Note extends React.PureComponent {
 					{ name: "Add list", action: this.addList, icon: "edit" },
 					{ separator: true },
 					{ name: "Delete", action: this.onDelete, icon: "delete", tintColor: "red" },
+					{ name: "Clear", action: this.clear, icon: "document-clear", tintColor: "red" },
 				],
 			}
 		});
+	};
+	clear = () => {
+		this.props.data.content = "";
+		this.setState({ value: this.props.data.content, contextMenu: { active: false } });
+		this.onChange("", false, false);
 	};
 
 	/*- Context menu actions -*/
 	addList() {
 		
 		/*- Check if backslash n is last -*/
-		if (this.state.value.endsWith("\n") || this.state.value.length === 0) {
+		if (this.props.data.content.endsWith("\n") || this.props.data.content.length === 0) {
 			/*- Add " • " to textarea body -*/
-			this.props.data.content = this.state.value + "• ";
+			this.onChange(this.props.data.content + "• ", false, false);
 		} else {
-			this.props.data.content = this.state.value + "\n• ";
+			this.onChange(this.props.data.content + "\n• ", false, false);
 		}
 		this.setState({ value: this.props.data.content, contextMenu: { active: false } });
 
@@ -212,7 +219,7 @@ export class Note extends React.PureComponent {
 					/*- We need size because textarea will be resized depending on the content -*/
 					onChange={(e) => {
 						this.onChange(e.target.value, false, false);
-
+						
 						/*- Set size -*/
 						this.setState({ size: { width: e.target.offsetWidth, height: e.target.offsetHeight } }, () => {
 							this.onChange(false, false, this.state.size);

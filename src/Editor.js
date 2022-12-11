@@ -17,9 +17,10 @@ class Editor extends React.PureComponent {
 
 		/*- Changeable -*/
 		this.state = {
-			placeNote: {
+			placeItem: {
 				active: false,
 				position: { x: 0, y: 0 },
+				size: { width: 9.1, height: 7.1 },
 			},
 			selection: {
 				active: false,
@@ -96,11 +97,12 @@ class Editor extends React.PureComponent {
 	}
 
 	/*- Methods -*/
-	addActiveDocument() {
+	addActiveDocument(callback, width, height) {
 		this.setState({
-			placeNote: {
+			placeItem: {
 				active: true,
 				position: { x: 0, y: 0 },
+				size: { width, height },
 			},
 		}, () => {
 			this.drag.current.classList.remove("active");
@@ -109,31 +111,37 @@ class Editor extends React.PureComponent {
 
 			/*- Add Event Listeners -*/
 			document.addEventListener("mousemove", this.noteFollowCursor);
-			document.addEventListener("mousedown", this.placeNote);
+			document.addEventListener("mousedown", () => {
+				if (!this.state.placeItem.active) return;
+				this.drag.current.classList.add("active");
+		
+				/*- Remove Event Listeners -*/
+				document.removeEventListener("mousemove", this.noteFollowCursor);
+				document.removeEventListener("mousedown", callback);
+
+				callback();
+			});
 		});
 
 	}
 	noteFollowCursor(event) {
+		if (!this.drag.current) return;
 		let gridSnap = this.gridSnaps[this.state.snappingIndex];
 
 		/*- Set position of note -*/
 		this.drag.current.style.left = Math.round((event.clientX - 108) / gridSnap) * gridSnap + "px";
 		this.drag.current.style.top = Math.round((event.clientY - 84) / gridSnap) * gridSnap + "px";
 		this.setState({
-			position: {
-				x: event.clientX,
-				y: event.clientY,
-			},
+			placeItem: {
+				position: {
+					x: event.clientX,
+					y: event.clientY,
+				},
+				...this.state.placeItem,
+			}
 		});
 	}
 	placeNote() {
-		if (!this.state.placeNote.active) return;
-		this.drag.current.classList.add("active");
-
-		/*- Remove Event Listeners -*/
-		document.removeEventListener("mousemove", this.noteFollowCursor);
-		document.removeEventListener("mosedown", this.placeNote);
-
 		/*- Create Note -*/
 		let newNote = {
 			position: {
@@ -146,24 +154,23 @@ class Editor extends React.PureComponent {
 			},
 			content: "",
 		};
-		console.log("NWE", newNote);
 		this.notes["note" + this.nextNoteIndex] = newNote;
 		this.makeUnsaved();
 
 		/*- Add Note -*/
-			this.setState({
-				placeNote: {
-					active: false,
-					position: { x: 0, y: 0 },
-				},
-				notes: {
-					...this.state.notes,
-					["note" + this.nextNoteIndex]: newNote
-				}
-			});
+		this.setState({
+			placeItem: {
+				active: false,
+				position: { x: 0, y: 0 },
+			},
+			notes: {
+				...this.state.notes,
+				["note" + this.nextNoteIndex]: newNote
+			}
+		});
 
-			/*- Increment Note Index -*/
-			this.nextNoteIndex++;
+		/*- Increment Note Index -*/
+		this.nextNoteIndex++;
 	}
 
 	/*- Default methods -*/
@@ -176,7 +183,7 @@ class Editor extends React.PureComponent {
 		fetch(BACKEND_URL + "get-doc", {
 			method: "GET",
 			headers: {
-				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiMGE3MzVlNTUtNThkNC00NmQ5LTllMDktNDk1ODBhYTdhOWVkIiwic3VpZCI6IjJkMzFhN2ZmNjlkNjRkODU5Y2VlMDg5YWVmZTFmYmRiIiwiZXhwIjoxNjczMzA4MjMyfQ.Ee3LgP0-DtZAIWuroG1ftunvtegA2CJmwbRNpYkEl5U",
+				"token": this.getCookie("token"),
 				"id": this.id
 			},
 		}).then(async res => await res.json()).then(data => {
@@ -196,8 +203,6 @@ class Editor extends React.PureComponent {
 				texts: data.texts,
 			})
 		});
-
-
 	}
 	componentWillUnmount() {
 		document.removeEventListener("mousemove", this.mouseMove);
@@ -273,32 +278,38 @@ class Editor extends React.PureComponent {
 
 	/*- Methods for canvas tool -*/
 	addCanvas() {
-		let newCanvas = {
-			position: {
-				x: 0,
-				y: 0,
-			},
-			size: {
-				width: 0,
-				height: 0,
-			},
-			content: "",
-		};
-		this.canvases["canvas" + this.nextCanvasIndex] = newCanvas;
-
-		/*- Add Canvas -*/
-		this.setState({
-			canvases: {
-				...this.state.canvases,
-				["canvas" + this.nextCanvasIndex]: newCanvas
-			}
-		});
-
-		/*- Increment Canvas Index -*/
-		this.nextCanvasIndex++;
-		this.makeUnsaved();
+		this.addActiveDocument(() => {
+			let newCanvas = {
+				position: {
+					x: parseInt(this.drag.current.style.left),
+					y: parseInt(this.drag.current.style.top)
+				},
+				size: {
+					width: 0,
+					height: 0,
+				},
+				content: "",
+			};
+			this.canvases["canvas" + this.nextCanvasIndex] = newCanvas;
+					
+			/*- Add Canvas -*/
+			this.setState({
+				canvases: {
+					...this.state.canvases,
+					["canvas" + this.nextCanvasIndex]: newCanvas
+				},
+				placeItem: {
+					active: false,
+					position: { x: 0, y: 0 },
+				},
+			});
+								
+			/*- Increment Canvas Index -*/
+			this.nextCanvasIndex++;
+			this.makeUnsaved();
+		}, 14.8, 9);		
 	}
-
+							
 	/*- Create text -*/
 	createText(selection) {
 		if (selection.size.width > 0 && selection.size.height > 0) {
@@ -385,7 +396,7 @@ class Editor extends React.PureComponent {
 		fetch(BACKEND_URL + "set-doc", {
 			method: "GET",
 			headers: {
-				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiMGE3MzVlNTUtNThkNC00NmQ5LTllMDktNDk1ODBhYTdhOWVkIiwic3VpZCI6IjJkMzFhN2ZmNjlkNjRkODU5Y2VlMDg5YWVmZTFmYmRiIiwiZXhwIjoxNjczMzA4MDcxfQ.Lk4cdxQQKoJ-Rn5_X11J4_gEfBa9HQqpkS7hOe6Hqvk",
+				"token": this.getCookie("token"),
 				"document": JSON.stringify(data),
 			},
 		}).then(() => {
@@ -493,7 +504,7 @@ class Editor extends React.PureComponent {
 							<Hr />
 
 							{/*- Create note -*/}
-							<button title="Create a note element" className="toolbar-btn" onClick={this.addActiveDocument}>
+							<button title="Create a note element" className="toolbar-btn" onClick={() => this.addActiveDocument(() => this.placeNote(), 10.1, 7.1)}>
 								<Icon name="note" size={32} />
 							</button>
 
@@ -542,10 +553,13 @@ class Editor extends React.PureComponent {
 						</div>
 					</div>
 					<div className="editor-content">
-						<h1 className="watermark">Quicknote</h1>
+						<h1 className="watermark"><img alt="logo" src={require("./icons/logo.svg").default} width={600} /></h1>
 
 						{/*- Notes cursor -*/}
-						{this.state.placeNote.active && <div className="note-place" ref={this.drag}></div>}
+						{this.state.placeItem.active && <div className="note-place" style={{
+							width: this.state.placeItem.size.width + "rem",
+							height: this.state.placeItem.size.height + "rem",
+						}} ref={this.drag}></div>}
 
 						{/*- Selection cursor -*/}
 						{this.state.selection.active && <div className="selection" style={{
