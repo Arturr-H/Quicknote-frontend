@@ -152,6 +152,7 @@ class Editor extends React.PureComponent {
 				width: 200,
 				height: 110,
 			},
+			_real_content: [],
 			content: "",
 		};
 		this.notes["note" + this.nextNoteIndex] = newNote;
@@ -197,9 +198,25 @@ class Editor extends React.PureComponent {
 			this.nextNoteIndex = Object.keys(data.notes).length;
 			this.nextCanvasIndex = Object.keys(data.canvases).length;
 
+			/*- Convert notes to utf8 -*/
+			let notes = {};
+			const keys = Object.keys(data.notes);
+			const decoder = new TextDecoder();
+			
+			/*- data.notes[key]._real_content is an array of bytes -*/
+			keys.forEach(key => {
+				let array = data.notes[key]._real_content; // Array([])
+
+				notes[key] = {
+					...data.notes[key],
+					content: decoder.decode(new Uint8Array(array)),
+				};
+			});
+
+
 			this.setState({
 				canvases: data.canvases,
-				notes: data.notes,
+				notes: notes,
 				texts: data.texts,
 			})
 		});
@@ -376,6 +393,18 @@ class Editor extends React.PureComponent {
 
 	/*- Save document -*/
 	saveDocument = (possibleCallback) => {
+		let utf8Encode = new TextEncoder();
+		let notes = {};
+		const keys = Object.keys(this.state.notes);
+		keys.forEach((key) => {
+			console.log(Array.from(utf8Encode.encode(this.state.notes[key].content)));
+			notes[key] = {
+				_real_content: Array.from(utf8Encode.encode(this.state.notes[key].content)),
+				position: this.state.notes[key].position,
+				size: this.state.notes[key].size,
+			};
+		});
+
 		let data = {
 			"title": this.title,
 			"description": this.description,
@@ -383,14 +412,15 @@ class Editor extends React.PureComponent {
 		
 			/*- The document's content -*/
 			"texts": this.state.texts,
-			"notes": this.state.notes,
+
+			/*- Remove the content prop, but keep _real_content -*/
+			"notes": notes,
 			"canvases": this.state.canvases,
 		
 			/*- This will be set in backend -*/
 			"owner": "",
 			"id": this.id,
 		};
-		console.log(data);
 
 		/*- Send data to backend -*/
 		fetch(BACKEND_URL + "set-doc", {
@@ -598,15 +628,23 @@ class Editor extends React.PureComponent {
 									index={key}
 									onChange={(content, position, size) => {
 										/*- Only update what's changed -*/
-										if (content !== false)  this.notes[key].content = content;
 										if (position !== false) this.notes[key].position = position;
 										if (size !== false)	    this.notes[key].size = size;
-										
+										if (content !== false)  {
+											/*- Replace self content with byte array -*/
+											let utf8Encode = new TextEncoder(); 
+											let byteArr = utf8Encode.encode(content);
+
+											this.notes[key]._real_content = byteArr;
+											this.notes[key].content = content;
+										};
+
 										this.setState({
 											notes: {
 												...this.state.notes,
 												[key]: {
 													content: this.notes[key].content,
+													_real_content: this.notes[key]._real_content,
 													position: this.notes[key].position,
 													size: this.notes[key].size
 												}

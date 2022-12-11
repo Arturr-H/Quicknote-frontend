@@ -131,7 +131,6 @@ export class Note extends React.PureComponent {
 
 	/*- Context menu actions -*/
 	addList() {
-		
 		/*- Check if backslash n is last -*/
 		if (this.props.data.content.endsWith("\n") || this.props.data.content.length === 0) {
 			/*- Add " • " to textarea body -*/
@@ -143,7 +142,6 @@ export class Note extends React.PureComponent {
 
 		/*- Focus textarea -*/
 		this.body.current.focus();
-		
 	}
 
 	/*- On change -*/
