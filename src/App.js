@@ -4,6 +4,7 @@ import React from "react";
 
 /*- Constants -*/
 const BACKEND_URL = "http://localhost:8080/";
+const ACCOUNT_URL = "http://localhost:8081/";
 
 /*- Main -*/
 class App extends React.PureComponent {
@@ -26,9 +27,10 @@ class App extends React.PureComponent {
 		fetch(BACKEND_URL + "get-documents", {
 			method: "GET",
 			headers: {
-				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4"
+				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiMGE3MzVlNTUtNThkNC00NmQ5LTllMDktNDk1ODBhYTdhOWVkIiwic3VpZCI6IjJkMzFhN2ZmNjlkNjRkODU5Y2VlMDg5YWVmZTFmYmRiIiwiZXhwIjoxNjczMzA4MDcxfQ.Lk4cdxQQKoJ-Rn5_X11J4_gEfBa9HQqpkS7hOe6Hqvk"
 			}
 		}).then(async res => {
+			// console.log(await res.json());
 			this.setState({ docs: await res.json() });
 		});
 
@@ -40,7 +42,7 @@ class App extends React.PureComponent {
 		fetch(BACKEND_URL + "add-doc", {
 			method: "GET",
 			headers: {
-				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4",
+				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiMGE3MzVlNTUtNThkNC00NmQ5LTllMDktNDk1ODBhYTdhOWVkIiwic3VpZCI6IjJkMzFhN2ZmNjlkNjRkODU5Y2VlMDg5YWVmZTFmYmRiIiwiZXhwIjoxNjczMzA4MDcxfQ.Lk4cdxQQKoJ-Rn5_X11J4_gEfBa9HQqpkS7hOe6Hqvk",
 				"title": title,
 				"description": description
 			}
@@ -92,8 +94,8 @@ class App extends React.PureComponent {
 		let ca = document.cookie.split(';');
 		for(let i = 0; i < ca.length; i++) {
 			let c = ca[i];
-			while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+			while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+			if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
 		}
 		return null;
 	};
@@ -118,7 +120,7 @@ class App extends React.PureComponent {
 								title={data.title}
 								description={data.description}
 								date={data.date}
-								author={data.author}
+								owner={data.owner}
 								href={data.id}
 							/>
 						)
@@ -149,8 +151,8 @@ class Card extends React.PureComponent {
 		/*- Static -*/
 		this.title       = this.props.title || "Unnamed note";
 		this.description = this.props.description || "No description provided";
-		this.date        = this.props.date || Date.now();
-		this.author      = this.props.author || "Unknown author";
+		this.date        = this.props.date || null;
+		this.owner      = this.props.owner || "Unknown author";
 		this.href        = this.props.href || "unknown";
 
 		/*- Bindings -*/
@@ -159,6 +161,7 @@ class Card extends React.PureComponent {
 
 	/*- Convert unix time to yyyy-mm-dd -*/
 	_date(unix) {
+		if (unix == null) return "Unknown date";
 		let date = new Date(unix);
 
 		let year  = date.getFullYear();
@@ -166,6 +169,13 @@ class Card extends React.PureComponent {
 		let day   = ("0" + date.getDate()).slice(-2);
 
 		return `${year}-${month}-${day}`;
+	}
+
+	/*- Get user -*/
+	componentDidMount() {
+		fetch(ACCOUNT_URL + "profile/data/by_suid/" + this.owner).then(res => res.json()).then(data => {
+			this.setState({ userData: data })
+		});
 	}
 
 	/*- Render -*/
@@ -191,7 +201,7 @@ class Card extends React.PureComponent {
 						{/*- Author -*/}
 						<div>
 							<Icon right name="profile" />
-							<p>{this.author}</p>
+							<p>{this.state.userData && this.state.userData.displayname}</p>
 						</div>
 					</footer>
 				</div>

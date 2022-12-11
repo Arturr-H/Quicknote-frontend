@@ -14,6 +14,10 @@ export class Note extends React.PureComponent {
 				x: this.props.data.position.x,
 				y: this.props.data.position.y,
 			},
+			size: {
+				width: this.props.data.size.width,
+				height: this.props.data.size.height,
+			},
 			focused: false,
 
 			contextMenu: {
@@ -42,6 +46,10 @@ export class Note extends React.PureComponent {
 
 	/*- Methods -*/
 	componentDidMount() {
+		/*- Set scale -*/
+		this.body.current.style.width = this.data.size.width + "px";
+		this.body.current.style.height = this.data.size.height + "px";
+
 		this.drag.current.addEventListener("mousedown", () => {
 			this.dragStart();
 		});
@@ -194,7 +202,6 @@ export class Note extends React.PureComponent {
 				<TextArea
 					autoFocus
 					_ref={this.body}
-					onResize={this.onResize}
 					className="note-body"
 					placeholder="Write something..."
 					onFocus={() => this.setState({ focused: true })}
@@ -203,7 +210,20 @@ export class Note extends React.PureComponent {
 					value={this.props.data.content}
 
 					/*- We need size because textarea will be resized depending on the content -*/
-					onChange={(e) => this.onChange(e.target.value, false, this.state.size)}
+					onChange={(e) => {
+						this.onChange(e.target.value, false, false);
+
+						/*- Set size -*/
+						this.setState({ size: { width: e.target.offsetWidth, height: e.target.offsetHeight } }, () => {
+							this.onChange(false, false, this.state.size);
+						});
+					}}
+					onMouseUp={(e) => {
+						/*- Set size -*/
+						this.setState({ size: { width: e.target.offsetWidth, height: e.target.offsetHeight } }, () => {
+							this.onChange(false, false, this.state.size);
+						});
+					}}
 				/>
 			</div>
 		);

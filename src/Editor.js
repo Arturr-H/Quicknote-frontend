@@ -142,15 +142,15 @@ class Editor extends React.PureComponent {
 			},
 			size: {
 				width: 200,
-				height: 200,
+				height: 110,
 			},
 			content: "",
 		};
+		console.log("NWE", newNote);
 		this.notes["note" + this.nextNoteIndex] = newNote;
 		this.makeUnsaved();
 
 		/*- Add Note -*/
-		setTimeout(() => {
 			this.setState({
 				placeNote: {
 					active: false,
@@ -164,7 +164,6 @@ class Editor extends React.PureComponent {
 
 			/*- Increment Note Index -*/
 			this.nextNoteIndex++;
-		}, 50);
 	}
 
 	/*- Default methods -*/
@@ -177,7 +176,7 @@ class Editor extends React.PureComponent {
 		fetch(BACKEND_URL + "get-doc", {
 			method: "GET",
 			headers: {
-				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4",
+				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiMGE3MzVlNTUtNThkNC00NmQ5LTllMDktNDk1ODBhYTdhOWVkIiwic3VpZCI6IjJkMzFhN2ZmNjlkNjRkODU5Y2VlMDg5YWVmZTFmYmRiIiwiZXhwIjoxNjczMzA4MjMyfQ.Ee3LgP0-DtZAIWuroG1ftunvtegA2CJmwbRNpYkEl5U",
 				"id": this.id
 			},
 		}).then(async res => await res.json()).then(data => {
@@ -369,6 +368,7 @@ class Editor extends React.PureComponent {
 		let data = {
 			"title": this.title,
 			"description": this.description,
+			"date": new Date().getTime(),
 		
 			/*- The document's content -*/
 			"texts": this.state.texts,
@@ -379,17 +379,20 @@ class Editor extends React.PureComponent {
 			"owner": "",
 			"id": this.id,
 		};
+		console.log(data);
 
 		/*- Send data to backend -*/
 		fetch(BACKEND_URL + "set-doc", {
 			method: "GET",
 			headers: {
-				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiOTc2OWUyNjYtNzY1Ny00YzM4LTkxNTYtMjEyMzhkODc3ZDIyIiwic3VpZCI6IjRiM2ZkNDczZjU0YzQyY2ViNmVjNTEyNTk2MzgyNWM2IiwiZXhwIjoxNjcxNDAzMTU4fQ.7zYufEzb1eiXVyM9GMtlfSU-YBHOJ_Jo7jLWvYhsGW4",
+				"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFydHVyIiwidWlkIjoiMGE3MzVlNTUtNThkNC00NmQ5LTllMDktNDk1ODBhYTdhOWVkIiwic3VpZCI6IjJkMzFhN2ZmNjlkNjRkODU5Y2VlMDg5YWVmZTFmYmRiIiwiZXhwIjoxNjczMzA4MDcxfQ.Lk4cdxQQKoJ-Rn5_X11J4_gEfBa9HQqpkS7hOe6Hqvk",
 				"document": JSON.stringify(data),
 			},
 		}).then(() => {
 			this.showToast("Document saved!");
-			possibleCallback && possibleCallback();
+			try {
+				possibleCallback && possibleCallback();
+			}catch {};
 		});
 		this.setState({
 			saved: true,
@@ -465,8 +468,8 @@ class Editor extends React.PureComponent {
 		let ca = document.cookie.split(';');
 		for(let i = 0; i < ca.length; i++) {
 			let c = ca[i];
-			while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+			while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+			if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
 		}
 		return null;
 	};
