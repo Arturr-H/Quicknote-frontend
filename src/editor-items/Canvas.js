@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon } from "../App";
+import { Icon } from "../components/Icon";
 
 /*- Components -*/
 export class Canvas extends React.PureComponent {

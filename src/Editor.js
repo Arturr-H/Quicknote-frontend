@@ -1,7 +1,7 @@
 /*- Imports -*/
 import "./App.css";
 import React from "react";
-import { Icon } from "./App";
+import { Icon } from "./components/Icon";
 import { Note } from "./editor-items/Note";
 import { Text } from "./editor-items/Text";
 import { Canvas } from "./editor-items/Canvas";
@@ -528,14 +528,14 @@ class Editor extends React.PureComponent {
 									window.open("/", "_self");
 								});
 							}}>
-								<Icon name="home" size={32} />
+								<Icon light={this.state.darkMode} name="home" size={32} />
 							</button>
 
 							<Hr />
 
 							{/*- Create note -*/}
 							<button title="Create a note element" className="toolbar-btn" onClick={() => this.addActiveDocument(() => this.placeNote(), 10.1, 7.1)}>
-								<Icon name="note" size={32} />
+								<Icon light={this.state.darkMode} name="note" size={32} />
 							</button>
 
 							{/*- Create text -*/}
@@ -544,19 +544,19 @@ class Editor extends React.PureComponent {
 								className={"toolbar-btn" + (this.state.placeText.active ? " active" : "")}
 								onClick={this.activateTextBoxAreaTool}
 							>
-								<Icon name="text" size={32} />
+								<Icon light={this.state.darkMode} name="text" size={32} />
 							</button>
 
 							{/*- Create canvas -*/}
 							<button title="Create a canvas" className="toolbar-btn" onClick={this.addCanvas}>
-								<Icon name="canvas" size={32} />
+								<Icon light={this.state.darkMode} name="canvas" size={32} />
 							</button>
 
 							<Hr />
 
 							{/*- Grid snap size -*/}
 							<button title="Change grid snap size" className="toolbar-btn" onClick={this.incrementGridSnap}>
-								<Icon name={
+								<Icon light={this.state.darkMode} name={
 									this.state.gridSnap === 1 ? "1x1" :
 									this.state.gridSnap === 2 ? "2x2" :
 									this.state.gridSnap === 4 ? "4x4" :
@@ -569,7 +569,7 @@ class Editor extends React.PureComponent {
 
 							{/*- Change dark / light mode -*/}
 							<button title="Change light / dark mode" className="toolbar-btn" onClick={this.toggleNightMode}>
-								<Icon name={
+								<Icon light={this.state.darkMode} name={
 									this.state.darkMode === true ? "moon" : "sun"
 								} size={32} />
 							</button>
@@ -578,7 +578,7 @@ class Editor extends React.PureComponent {
 
 							{/*- Save document -*/}
 							<button title="Save" className="toolbar-btn" onClick={this.saveDocument}>
-								<Icon name="check" size={32} />
+								<Icon light={this.state.darkMode} name="check" size={32} />
 							</button>
 						</div>
 					</div>

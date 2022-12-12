@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon } from "../App";
+import { Icon } from "./Icon";
 
 /*- Toast -*/
 export class Toast extends React.PureComponent {

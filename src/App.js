@@ -1,6 +1,7 @@
 /*- Imports -*/
 import "./App.css";
 import React from "react";
+import { Icon } from "./components/Icon";
 
 /*- Constants -*/
 const BACKEND_URL = "http://localhost:8080/";
@@ -120,7 +121,7 @@ class App extends React.PureComponent {
 			<main onClick={this.onClick}>
 				<nav>
 					<div>
-						<img src={require("./icons/logo.svg").default} width={100} />
+						<img alt="logo" src={require("./icons/logo.svg").default} width={100} />
 					</div>
 					<div>
 						<button onClick={() => this.showModal("register")} className="text-link">Sign Up</button>
@@ -241,65 +242,6 @@ function Vr() {
 	return (
 		<div className="vertical-rule"></div>
 	)
-}
-
-/*- Icon -*/
-class Icon extends React.PureComponent {
-	constructor(props) {
-		super(props);
-
-		/*- Changeable -*/
-		this.state = {};
-
-		/*- Static -*/
-		this.left = this.props.left || false;
-		this.href = this.props.href || null;
-		this.right = this.props.right || false;
-		this.size = this.props.size || 24;
-		this.icons = {
-			"document-clear": require("./icons/document-clear.svg").default,
-			"time-square"   : require("./icons/time-square.svg").default,
-			"document"      : require("./icons/note.svg").default,
-			"warning"       : require("./icons/warning.svg").default,
-			"profile"       : require("./icons/profile.svg").default,
-			"canvas"        : require("./icons/canvas.svg").default,
-			"check"         : require("./icons/check.svg").default,
-			"cross"         : require("./icons/cross.svg").default,
-			"delete"        : require("./icons/delete.svg").default,
-			"edit"          : require("./icons/edit.svg").default,
-			"moon"          : require("./icons/moon.svg").default,
-			"home"          : require("./icons/home.svg").default,
-			"plus"          : require("./icons/plus.svg").default,
-			"note"          : require("./icons/note.svg").default,
-			"text"          : require("./icons/text.svg").default,
-			"sun"           : require("./icons/sun.svg").default,
-			"32x32"			: require("./icons/32x32.svg").default,
-			"16x16"			: require("./icons/16x16.svg").default,
-			"8x8"  			: require("./icons/8x8.svg").default,
-			"4x4"  			: require("./icons/4x4.svg").default,
-			"2x2"  			: require("./icons/2x2.svg").default,
-			"1x1"  			: require("./icons/1x1.svg").default,
-		};
-
-		/*- Bindings -*/
-	}
-
-	/*- Render -*/
-	render() {
-		return (
-			<React.Fragment>
-				{this.left && <div className="icon-margin"></div>}
-				{this.href ? (
-					<a href={this.href}>
-						<img className="icon" src={this.icons[this.props.name || "question-circle"]} alt={this.props.name || "Nope :("} style={{ width: this.size, height: this.size }} />
-					</a>
-				): (
-					<img className="icon" src={this.icons[this.props.name || "question-circle"]} alt={this.props.name || "Nonexistent image :("} style={{ width: this.size, height: this.size }} />
-				)}
-				{this.right && <div className="icon-margin"></div>}
-			</React.Fragment>
-		)
-	}
 }
 
 /*- Modal -*/

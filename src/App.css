@@ -17,7 +17,6 @@
 	--main-5: #333;
 
 	--text: #000;
-	--toolbar-btn: #fff;
 }
 
 /*- Html elements -*/
@@ -222,7 +221,7 @@ main > .main > a { text-decoration: none; }
 
 	cursor: pointer;
 
-	background: var(--toolbar-btn);
+	background: var(--main);
 	border-radius: 0.5rem;
 	border: 0.1rem solid var(--main-1);
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);

@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon } from "../App";
+import { Icon } from "../components/Icon";
 import { TextArea } from "../Editor";
 
 /*- Components -*/
