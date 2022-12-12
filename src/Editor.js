@@ -111,16 +111,17 @@ class Editor extends React.PureComponent {
 
 			/*- Add Event Listeners -*/
 			document.addEventListener("mousemove", this.noteFollowCursor);
-			document.addEventListener("mousedown", () => {
+			const f = () => {
 				if (!this.state.placeItem.active) return;
 				this.drag.current.classList.add("active");
-		
+				
+				callback();
+
 				/*- Remove Event Listeners -*/
 				document.removeEventListener("mousemove", this.noteFollowCursor);
-				document.removeEventListener("mousedown", callback);
-
-				callback();
-			});
+				document.removeEventListener("mousedown", f);
+			};
+			document.addEventListener("mousedown", f);
 		});
 
 	}
