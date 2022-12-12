@@ -189,8 +189,12 @@ class Editor extends React.PureComponent {
 				"id": this.id
 			},
 		}).then(async res => await res.json()).then(data => {
-			this.notes = data.notes;
-			this.texts = data.texts;
+			/*- Convert notes to utf8 -*/
+			let notes = this.convertToRealContent(data.notes);
+			let texts = this.convertToRealContent(data.texts);
+
+			this.notes = notes;
+			this.texts = texts;
 			this.canvases = data.canvases;
 			this.title = data.title;
 			this.description = data.description;
@@ -199,26 +203,10 @@ class Editor extends React.PureComponent {
 			this.nextNoteIndex = Object.keys(data.notes).length;
 			this.nextCanvasIndex = Object.keys(data.canvases).length;
 
-			/*- Convert notes to utf8 -*/
-			let notes = {};
-			const keys = Object.keys(data.notes);
-			const decoder = new TextDecoder();
-			
-			/*- data.notes[key]._real_content is an array of bytes -*/
-			keys.forEach(key => {
-				let array = data.notes[key]._real_content; // Array([])
-
-				notes[key] = {
-					...data.notes[key],
-					content: decoder.decode(new Uint8Array(array)),
-				};
-			});
-
-
 			this.setState({
 				canvases: data.canvases,
-				notes: notes,
-				texts: data.texts,
+				notes,
+				texts,
 			})
 		});
 	}
@@ -226,6 +214,24 @@ class Editor extends React.PureComponent {
 		document.removeEventListener("mousemove", this.mouseMove);
 		document.removeEventListener("mouseup", this.mouseUp);
 	}
+
+	/*- Convert bytes into real text strings -*/
+	convertToRealContent = (content) => {
+		let items = {};
+		const keys = Object.keys(content);
+		const decoder = new TextDecoder();
+
+		keys.forEach(key => {
+			let array = content[key]._real_content; // Array([])
+
+			items[key] = {
+				...content[key],
+				content: decoder.decode(new Uint8Array(array)),
+			};
+		});
+
+		return items;
+	};
 
 	/*- Methods for selection tool -*/
 	mouseMove(event) {
@@ -333,6 +339,7 @@ class Editor extends React.PureComponent {
 		if (selection.size.width > 0 && selection.size.height > 0) {
 			let newText = {
 				content: "",
+				_real_content: [],
 				position: {
 					x: selection.position.x,
 					y: selection.position.y,
@@ -394,17 +401,8 @@ class Editor extends React.PureComponent {
 
 	/*- Save document -*/
 	saveDocument = (possibleCallback) => {
-		let utf8Encode = new TextEncoder();
-		let notes = {};
-		const keys = Object.keys(this.state.notes);
-		keys.forEach((key) => {
-			console.log(Array.from(utf8Encode.encode(this.state.notes[key].content)));
-			notes[key] = {
-				_real_content: Array.from(utf8Encode.encode(this.state.notes[key].content)),
-				position: this.state.notes[key].position,
-				size: this.state.notes[key].size,
-			};
-		});
+		let notes = this.encodeItems(this.state.notes);
+		let texts = this.encodeItems(this.state.texts);
 
 		let data = {
 			"title": this.title,
@@ -412,7 +410,7 @@ class Editor extends React.PureComponent {
 			"date": new Date().getTime(),
 		
 			/*- The document's content -*/
-			"texts": this.state.texts,
+			"texts": texts,
 
 			/*- Remove the content prop, but keep _real_content -*/
 			"notes": notes,
@@ -440,6 +438,23 @@ class Editor extends React.PureComponent {
 			saved: true,
 		});
 	}
+	
+	/*- Encode items -*/
+	encodeItems = (items) => {
+		let _items = {};
+		const keys = Object.keys(items);
+		let utf8Encode = new TextEncoder();
+		keys.forEach((key) => {
+			_items[key] = {
+				_real_content: Array.from(utf8Encode.encode(items[key].content)),
+				position: items[key].position,
+				size: items[key].size,
+				font_size: items[key].size.font_size,
+			};
+		});
+		return _items;
+	}
+
 
 	/*- Save handling -*/
 	makeUnsaved = () => {
@@ -627,6 +642,7 @@ class Editor extends React.PureComponent {
 									data={this.state.notes[key]}
 									key={key}
 									index={key}
+									darkMode={this.state.darkMode}
 									onChange={(content, position, size) => {
 										/*- Only update what's changed -*/
 										if (position !== false) this.notes[key].position = position;
@@ -674,6 +690,7 @@ class Editor extends React.PureComponent {
 							return (
 								<Text
 									gridSnap={this.gridSnaps[this.state.snappingIndex]}
+									darkMode={this.state.darkMode}
 									data={this.state.texts[key]}
 									key={key}
 									index={key}
@@ -721,6 +738,7 @@ class Editor extends React.PureComponent {
 									data={data}
 									key={key}
 									index={key}
+									darkMode={this.state.darkMode}
 									onChange={(content, position, size) => {
 										/*- Only update what's changed -*/
 										if (content !== false)  this.canvases[key].content = content;

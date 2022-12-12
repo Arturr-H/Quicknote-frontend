@@ -171,7 +171,7 @@ export class Text extends React.PureComponent {
 									}}
 									key={index}
 								>
-									<Icon className="icon" name={action.icon} />
+									<Icon light={this.props.darkMode} className="icon" name={action.icon} />
 									<button
 										className={"context-button" + (action.tintColor ? " colored-" + action.tintColor : "")}
 										key={index}
