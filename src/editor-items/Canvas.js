@@ -34,6 +34,7 @@ export class Canvas extends React.PureComponent {
 		this.drag = React.createRef();
 		this.canvas = React.createRef();
 		this.canvasRef = React.createRef();
+		this.canvasHoverRef = React.createRef();
 
 		/*- Statics -*/
 		this.onDelete = this.props.onDelete;
@@ -139,6 +140,9 @@ export class Canvas extends React.PureComponent {
 
 	/*- Canvas methods -*/
 	onMouseDown = (e) => {
+		/*- Draw a small circle to make the line round -*/
+		this.drawRound(e);
+
 		let ctx = this.state.canvas.ctx ?? this.canvasRef.current.getContext("2d");
 
 		/*- Start drawing -*/
@@ -162,6 +166,9 @@ export class Canvas extends React.PureComponent {
 
 		/*- Stop drawing -*/
 		ctx.closePath();
+
+		/*- Draw a small circle to make the line round -*/
+		this.drawRound(e);
 
 		/*- Reset state -*/
 		this.setState({
@@ -189,8 +196,10 @@ export class Canvas extends React.PureComponent {
 				}
 			});
 		}
+		this.renderHoverCursor(e);
 	};
 	stopMouse = (e) => {
+		/*- Reset state -*/
 		this.setState({
 			canvas: {
 				drawing: false,
@@ -198,6 +207,20 @@ export class Canvas extends React.PureComponent {
 		});
 		this.saveCanvasContent();
 	};
+	drawRound = (e) => {
+		let ctx = this.state.canvas.ctx ?? this.canvasRef.current.getContext("2d");
+		ctx.beginPath();
+		ctx.arc(
+			e.clientX - this.canvasRef.current.offsetLeft - this.state.pos.x,
+			e.clientY - this.canvasRef.current.offsetTop - this.state.pos.y,
+			3,
+			0,
+			2 * Math.PI
+		);
+		ctx.fillStyle = this.state.canvas.color;
+		ctx.fill();
+		ctx.closePath();
+	}
 	clearCanvas = () => {
 		let ctx = this.state.canvas.ctx || this.canvasRef.current.getContext("2d");
 		ctx.clearRect(0, 0, this.canvasRef.current.width, this.canvasRef.current.height);
@@ -223,6 +246,27 @@ export class Canvas extends React.PureComponent {
 			console.log(this.state.contextMenu.active);
 		});
 	};
+	renderHoverCursor = (e) => {
+		/*- Render a small circle on the canvas that follows the cursor -*/
+		let ctx = this.canvasHoverRef.current.getContext("2d");
+		ctx.clearRect(0, 0, this.canvasHoverRef.current.width, this.canvasHoverRef.current.height);
+		ctx.beginPath();
+		ctx.arc(
+			e.clientX - this.canvasHoverRef.current.offsetLeft - this.state.pos.x,
+			e.clientY - this.canvasHoverRef.current.offsetTop - this.state.pos.y,
+			3,
+			0,
+			2 * Math.PI
+		);
+		ctx.fillStyle = this.state.canvas.color;
+		ctx.fill();
+		ctx.closePath();
+	};
+	removeHoverCursor = () => {
+		let ctx = this.state.canvas.ctx ?? this.canvasRef.current.getContext("2d");
+		ctx.clearRect(0, 0, this.canvasRef.current.width, this.canvasRef.current.height);
+	};
+
 	saveCanvasContent = () => {
 		const content = this.canvasRef.current.toDataURL("image/jpg");
 		this.onChange(content, false, false);
@@ -315,7 +359,8 @@ export class Canvas extends React.PureComponent {
 					height={this.props.height}
 					style={{
 						width: this.props.width,
-						height: this.props.height
+						height: this.props.height,
+						cursor: "none"
 					}}
 					ref={this.canvasRef}
 
@@ -326,7 +371,18 @@ export class Canvas extends React.PureComponent {
 					onMouseLeave={this.stopMouse}
 					onMouseOut={this.stopMouse}
 				/>
-
+				<canvas
+					width={this.props.width}
+					height={this.props.height}
+					style={{
+						width: this.props.width,
+						height: this.props.height,
+						cursor: "none",
+						position: "absolute",
+						pointerEvents: "none"
+					}}
+					ref={this.canvasHoverRef}
+				/>
 			</div>
 		);
 	}

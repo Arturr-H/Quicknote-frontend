@@ -436,6 +436,7 @@ main > .main > a { text-decoration: none; }
 	text-align: center;
 	resize: both !important;
 	background: var(--main);
+	transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
 }.item.text > header > .stack, .item.text > header > .actions {
 	position: absolute;
 	display: none;
