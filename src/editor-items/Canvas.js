@@ -67,16 +67,16 @@ export class Canvas extends React.PureComponent {
 
 		/*- Set canvas content / previous image -*/
 		const canvas = this.canvasRef.current.getContext("2d");
-		var image = new Image();
-		image.onload = function() {
-			canvas.drawImage(image, 0, 0);
-		};
 		
 		/*- Grab image content -*/
 		console.log(BACKEND_URL + this.props.id + "-" + this.data.id);
 		fetch(BACKEND_URL + this.props.id + "-" + this.data.id).then(e => e.blob()).then(async e => {
 			// console.log(await e.text());
-			canvas.drawImage(new Image(await e.text()), 0, 0);
+			var image = new Image();
+			image.src = await e.text();
+			image.onload = function() {
+				canvas.drawImage(image, 0, 0);
+			};
 		});
 
 	}
