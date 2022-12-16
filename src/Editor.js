@@ -439,6 +439,21 @@ class Editor extends React.PureComponent {
 		this.setState({
 			saved: true,
 		});
+
+		/*- Save canvases -*/
+		Object.keys(this.state.canvases).forEach((key) => {
+			/*- Save canvas -*/
+			fetch(BACKEND_URL + "save-canvas", {
+				method: "POST",
+				headers: {
+					"token": this.getCookie("token"),
+					"doc-id": this.id,
+					"canvas-id": key,
+				},
+				body: this.state.canvases[key].content,
+			})
+			console.log("saved canvas");
+		});
 	}
 	
 	/*- Encode items -*/
@@ -755,17 +770,6 @@ class Editor extends React.PureComponent {
 										if (content !== false)  this.canvases[key].content = content;
 										if (position !== false) this.canvases[key].position = position;
 										if (size !== false)	    this.canvases[key].size = size;
-
-										/*- Save canvas -*/
-										fetch(BACKEND_URL + "save-canvas", {
-											method: "POST",
-											headers: {
-												"token": this.getCookie("token"),
-												"doc-id": this.id,
-												"canvas-id": key,
-											},
-											body: content
-										})
 
 										this.setState({
 											canvases: {
