@@ -32,7 +32,6 @@ class App extends React.PureComponent {
 				"token": this.getCookie("token")
 			}
 		}).then(async res => {
-			// console.log(await res.json());
 			this.setState({ docs: await res.json() });
 		});
 

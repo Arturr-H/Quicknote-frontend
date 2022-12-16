@@ -1,5 +1,9 @@
 import React from "react";
+import { ContextMenu } from "../components/ContextMenu";
 import { Icon } from "../components/Icon";
+
+/*- Constants -*/
+const BACKEND_URL = "http://localhost:8080/";
 
 /*- Components -*/
 export class Canvas extends React.PureComponent {
@@ -67,13 +71,21 @@ export class Canvas extends React.PureComponent {
 		image.onload = function() {
 			canvas.drawImage(image, 0, 0);
 		};
-		image.src = this.data.content;
+		
+		/*- Grab image content -*/
+		console.log(BACKEND_URL + this.props.id + "-" + this.data.id);
+		fetch(BACKEND_URL + this.props.id + "-" + this.data.id).then(e => e.blob()).then(async e => {
+			// console.log(await e.text());
+			canvas.drawImage(new Image(await e.text()), 0, 0);
+		});
+
 	}
 	componentWillUnmount() {
 		this.drag.current.removeEventListener("mousedown", this.dragStart);
 		window.removeEventListener("mouseup", this.dragEnd);
 		window.removeEventListener("mousemove", this.dragMove);
 	}
+
 
 	/*- Event Handlers -*/
 	dragStart = (_) => {
@@ -168,7 +180,7 @@ export class Canvas extends React.PureComponent {
 		ctx.closePath();
 
 		/*- Draw a small circle to make the line round -*/
-		this.drawRound(e);
+		if (this.state.canvas.drawing) this.drawRound(e);
 
 		/*- Reset state -*/
 		this.setState({
@@ -199,6 +211,9 @@ export class Canvas extends React.PureComponent {
 		this.renderHoverCursor(e);
 	};
 	stopMouse = (e) => {
+		/*- Clear hover cursor -*/
+		this.canvasHoverRef.current.getContext("2d").clearRect(0, 0, this.canvasHoverRef.current.width, this.canvasHoverRef.current.height);
+
 		/*- Reset state -*/
 		this.setState({
 			canvas: {
@@ -242,8 +257,6 @@ export class Canvas extends React.PureComponent {
 			contextMenu: {
 				active: false,
 			}
-		}, () => {
-			console.log(this.state.contextMenu.active);
 		});
 	};
 	renderHoverCursor = (e) => {
@@ -266,7 +279,6 @@ export class Canvas extends React.PureComponent {
 		let ctx = this.state.canvas.ctx ?? this.canvasRef.current.getContext("2d");
 		ctx.clearRect(0, 0, this.canvasRef.current.width, this.canvasRef.current.height);
 	};
-
 	saveCanvasContent = () => {
 		const content = this.canvasRef.current.toDataURL("image/jpg");
 		this.onChange(content, false, false);
@@ -290,53 +302,7 @@ export class Canvas extends React.PureComponent {
 				{/*- Context menu -*/}
 				{
 					this.state.contextMenu.active && 
-					<div className="contextmenu">
-						{this.state.contextMenu.actions.map((action, index) => {
-
-							/*- Render either Separator or context menu -*/
-							return (action.separator === true) ? (
-								<div className="context-menu-separator" key={index} />
-							) : 
-							
-							/*- If is color -*/
-							(action.color === true) ? (
-								<div
-									className="context-menu-item"
-									style={{
-										left: this.state.contextMenu.x,
-										top: this.state.contextMenu.y + (index * 40)
-									}}
-									key={index}
-								>
-									<div className="color-dot" style={{ background: action.value }} />
-									<button
-										className="context-button"
-										key={index}
-										onClick={action.action}
-									>{action.name}</button>
-								</div>
-							) :
-							
-							/*- If is button -*/
-							(
-								<div
-									className="context-menu-item"
-									style={{
-										left: this.state.contextMenu.x,
-										top: this.state.contextMenu.y + (index * 40)
-									}}
-									key={index}
-								>
-									<Icon light={this.props.darkMode} className="icon" name={action.icon} />
-									<button
-										className={"context-button" + (action.tintColor ? " colored-" + action.tintColor : "")}
-										key={index}
-										onClick={action.action}
-									>{action.name}</button>
-								</div>
-							)
-						})}
-					</div>
+					<ContextMenu actions={this.state.contextMenu.actions} />
 				}
 
 				{/*- Header -*/}

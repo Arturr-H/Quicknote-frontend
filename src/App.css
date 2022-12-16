@@ -878,6 +878,63 @@ main > .main > a { text-decoration: none; }
 	color: white;
 }
 
+/*- Calculator -*/
+.calculator-container {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}.calculator-container > .display {
+	width: 100%;
+	height: 3rem;
+	border-radius: 0.5rem;
+	cursor: pointer;
+
+	background: var(--main-1);
+	box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1);
+
+	box-sizing: border-box;
+	padding: 0.5rem 1rem;
+
+	display: flex;
+	align-items: center;
+	color: var(--main-4);
+}.calculator-container > .display > p {
+	padding: 0;
+	margin: 0;
+}.calculator-container > .buttons {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: space-around;
+	gap: 0.5rem;
+	
+}.calculator-container > .buttons > .row {
+	display: inline-flex;
+	gap: 0.5rem;
+	justify-content: space-between;
+	align-items: center;
+
+	width: 100%;
+}.calculator-container > .buttons > .row > button {
+	width: 3rem;
+	height: 3rem;
+
+	border: none;
+	outline: none;
+
+	border-radius: 0.5rem;
+	cursor: pointer;
+
+	background: var(--main-1);
+	box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1);
+	
+}.calculator-container > .buttons > .row > button.wide {
+	width: calc(6rem + 0.5rem);
+}.calculator-container > .buttons > .row > button:hover {
+	background: rgb(87, 182, 74);
+}.calculator-container > .buttons > .row > button:active {
+	background: rgb(77, 169, 64);
+}
+
 .main-wrapper {
 	width: 100%;
 	flex: 1;

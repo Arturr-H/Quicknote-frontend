@@ -6,6 +6,7 @@ import { Note } from "./editor-items/Note";
 import { Text } from "./editor-items/Text";
 import { Canvas } from "./editor-items/Canvas";
 import { Toast } from "./components/Toast";
+import { Calculator } from "./editor-items/Calculator";
 
 /*- Constants -*/
 const BACKEND_URL = "http://localhost:8080/";
@@ -82,7 +83,6 @@ class Editor extends React.PureComponent {
 
 	/*- Increment Grid Snap -*/
 	incrementGridSnap() {
-		console.log(this.gridSnaps[this.state.snappingIndex]);
 		if (this.state.snappingIndex < this.gridSnaps.length - 1) {
 			this.setState({
 				snappingIndex: this.state.snappingIndex + 1,
@@ -303,6 +303,7 @@ class Editor extends React.PureComponent {
 	/*- Methods for canvas tool -*/
 	addCanvas() {
 		this.addActiveDocument(() => {
+			const key = "canvas" + this.nextCanvasIndex;
 			let newCanvas = {
 				position: {
 					x: parseInt(this.drag.current.style.left),
@@ -313,14 +314,15 @@ class Editor extends React.PureComponent {
 					height: 0,
 				},
 				content: "",
+				id:key
 			};
-			this.canvases["canvas" + this.nextCanvasIndex] = newCanvas;
+			this.canvases[key] = newCanvas;
 					
 			/*- Add Canvas -*/
 			this.setState({
 				canvases: {
 					...this.state.canvases,
-					["canvas" + this.nextCanvasIndex]: newCanvas
+					[key]: newCanvas
 				},
 				placeItem: {
 					active: false,
@@ -455,7 +457,6 @@ class Editor extends React.PureComponent {
 		return _items;
 	}
 
-
 	/*- Save handling -*/
 	makeUnsaved = () => {
 		this.setState({
@@ -582,6 +583,15 @@ class Editor extends React.PureComponent {
 									"1x1"
 								} size={32} />
 							</button>
+
+							<Hr />
+
+							{/*- Add calculator -*/}
+							<button title="Add calculator" className="toolbar-btn" onClick={this.addCanvas}>
+								<Icon light={this.state.darkMode} name="calculator-horizontal" size={32} />
+							</button>
+
+							<Hr />
 
 							{/*- Change dark / light mode -*/}
 							<button title="Change light / dark mode" className="toolbar-btn" onClick={this.toggleNightMode}>
@@ -739,19 +749,32 @@ class Editor extends React.PureComponent {
 									key={key}
 									index={key}
 									darkMode={this.state.darkMode}
+									id={this.id} // Document ID
 									onChange={(content, position, size) => {
 										/*- Only update what's changed -*/
 										if (content !== false)  this.canvases[key].content = content;
 										if (position !== false) this.canvases[key].position = position;
 										if (size !== false)	    this.canvases[key].size = size;
 
+										/*- Save canvas -*/
+										fetch(BACKEND_URL + "save-canvas", {
+											method: "POST",
+											headers: {
+												"token": this.getCookie("token"),
+												"doc-id": this.id,
+												"canvas-id": key,
+											},
+											body: content
+										})
+
 										this.setState({
 											canvases: {
 												...this.state.canvases,
 												[key]: {
-													content: this.canvases[key].content,
-													position: this.canvases[key].position,
-													size: this.canvases[key].sizes
+													content: 	this.canvases[key].content,
+													position: 	this.canvases[key].position,
+													size: 		this.canvases[key].sizes,
+													id: 		key
 												}
 											}
 										});
@@ -773,7 +796,10 @@ class Editor extends React.PureComponent {
 							)
 						})}
 
-						
+						<Calculator
+							gridSnap={this.gridSnaps[this.state.snappingIndex]}
+							darkMode={this.state.darkMode}
+						/>
 					</div>
 				</div>
 

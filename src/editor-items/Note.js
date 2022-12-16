@@ -1,4 +1,5 @@
 import React from "react";
+import { ContextMenu } from "../components/ContextMenu";
 import { Icon } from "../components/Icon";
 import { TextArea } from "../Editor";
 
@@ -21,8 +22,6 @@ export class Note extends React.PureComponent {
 			focused: false,
 
 			contextMenu: {
-				x: 0,
-				y: 0,
 				actions: [],
 				active: false
 			},
@@ -101,7 +100,6 @@ export class Note extends React.PureComponent {
 	/*- Show context menu -*/
 	showContextMenu = (e) => {
 		let { clientX, clientY } = e;
-		console.log(clientX, clientY);
 
 		/*- E will be null sometimes because contextmenu can be
 			triggered from pressing the second action button -*/
@@ -166,31 +164,7 @@ export class Note extends React.PureComponent {
 				{/*- Context menu -*/}
 				{
 					this.state.contextMenu.active && 
-					<div className="contextmenu">
-						{this.state.contextMenu.actions.map((action, index) => {
-
-							/*- Render either Separator or context menu -*/
-							return (action.separator === true) ? (
-								<div className="context-menu-separator" key={index} />
-							) : (
-								<div
-									className="context-menu-item"
-									style={{
-										left: this.state.contextMenu.x,
-										top: this.state.contextMenu.y + (index * 40)
-									}}
-									key={index}
-								>
-									<Icon light={this.props.darkMode} className="icon" name={action.icon} />
-									<button
-										className={"context-button" + (action.tintColor ? " colored-" + action.tintColor : "")}
-										key={index}
-										onClick={action.action}
-									>{action.name}</button>
-								</div>
-							)
-						})}
-					</div>
+					<ContextMenu actions={this.state.contextMenu.actions} />
 				}
 				<header>
 					<div className="actions">

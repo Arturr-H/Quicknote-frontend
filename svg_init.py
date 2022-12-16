@@ -2,7 +2,7 @@
 import os;
 
 # Constants
-folder = "./src/icons/";
+folder = "./src/icons/black/";
 
 # Walkdir
 for file in os.listdir(folder):

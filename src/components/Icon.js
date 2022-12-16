@@ -36,6 +36,8 @@ export class Icon extends React.PureComponent {
 			"4x4"           : require("../icons/black/4x4.svg").default,
 			"2x2"           : require("../icons/black/2x2.svg").default,
 			"1x1"           : require("../icons/black/1x1.svg").default,
+			"calculator-horizontal"           : require("../icons/black/calculator-horizontal.svg").default,
+			"calculator-vertical"           : require("../icons/black/calculator-vertical.svg").default,
 		};
 		this.whiteIcons = {
 			"document-clear": require("../icons/white/document-clear.svg").default,
