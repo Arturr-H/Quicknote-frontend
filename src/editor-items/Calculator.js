@@ -139,33 +139,33 @@ export class Calculator extends React.PureComponent {
                     </div>
                     <div className="buttons">
                         <div className="row">
-                            <button className="clear">CE</button>
-                            <button className="clear">√</button>
-                            <button className="clear">⌫</button>
-                            <button className="clear">⌫</button>
+                            <button><Icon name="ce" size={32} darkMode={this.props.darkMode} /></button>
+                            <button><Icon name="sqrt" size={32} darkMode={this.props.darkMode} /></button>
+                            <button><Icon name="remove" size={32} darkMode={this.props.darkMode} /></button>
+                            <button><Icon name="remove" size={32} darkMode={this.props.darkMode} /></button>
                         </div>
                         <div className="row">
-                            <button className="clear">1</button>
-                            <button className="clear">2</button>
-                            <button className="clear">3</button>
-                            <button className="operator">x</button>
+                            <button className="number"><Icon name="one" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="number"><Icon name="two" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="number"><Icon name="three" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="operator"><Icon name="multiplication" size={32} darkMode={this.props.darkMode} /></button>
                         </div>
                         <div className="row">
-                            <button className="clear">4</button>
-                            <button className="clear">5</button>
-                            <button className="clear">6</button>
-                            <button className="operator">-</button>
+                            <button className="number"><Icon name="four" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="number"><Icon name="five" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="number"><Icon name="six" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="operator"><Icon name="subtraction" size={32} darkMode={this.props.darkMode} /></button>
                         </div>
                         <div className="row">
-                            <button className="clear">7</button>
-                            <button className="clear">8</button>
-                            <button className="clear">9</button>
-                            <button className="operator">+</button>
+                            <button className="number"><Icon name="seven" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="number"><Icon name="eight" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="number"><Icon name="nine" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="operator"><Icon name="addition" size={32} darkMode={this.props.darkMode} /></button>
                         </div>
                         <div className="row">
-                            <button className="wide">0</button>
-                            <button className="clear">,</button>
-                            <button className="operator">=</button>
+                            <button className="wide number"><Icon name="zero" size={32} darkMode={this.props.darkMode} /></button>
+                            <button className="number">•</button>
+                            <button className="operator"><Icon name="equals" size={32} darkMode={this.props.darkMode} /></button>
                         </div>
                     </div>
                 </div>

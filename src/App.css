@@ -927,12 +927,20 @@ main > .main > a { text-decoration: none; }
 	background: var(--main-1);
 	box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1);
 	
+	font-family: 'Roboto Condensed', sans-serif;
+	font-weight: 800;
+
+	display: flex;
+	justify-content: center;
+		align-items: center;
 }.calculator-container > .buttons > .row > button.wide {
 	width: calc(6rem + 0.5rem);
 }.calculator-container > .buttons > .row > button:hover {
 	background: rgb(87, 182, 74);
 }.calculator-container > .buttons > .row > button:active {
 	background: rgb(77, 169, 64);
+}.calculator-container > .buttons > .row > button.number > * {
+	opacity: 0.4;
 }
 
 .main-wrapper {
