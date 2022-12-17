@@ -1,7 +1,6 @@
 import React from "react";
 import { ContextMenu } from "../components/ContextMenu";
 import { Icon } from "../components/Icon";
-import { TextArea } from "../Editor";
 
 /*- Components -*/
 export class Note extends React.PureComponent {
@@ -178,9 +177,9 @@ export class Note extends React.PureComponent {
 						<div></div>
 					</div>
 				</header>
-				<TextArea
+				<textarea
 					autoFocus
-					_ref={this.body}
+					ref={this.body}
 					className="note-body"
 					placeholder="Write something..."
 					onFocus={() => this.setState({ focused: true })}

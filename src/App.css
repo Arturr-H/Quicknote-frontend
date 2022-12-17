@@ -282,7 +282,7 @@ main > .main > a { text-decoration: none; }
 	min-width: 8rem;
 	min-height: 5rem;
 
-	resize: horizontal;
+	resize: both;
 	max-width: 30rem;
 	max-height: 30rem;
 	background: var(--main);

@@ -852,19 +852,5 @@ class SaveButton extends React.PureComponent {
 	}
 }
 
-export class TextArea extends React.PureComponent {
-	handleKeyDown(e) {
-		e.target.style.height = 'inherit';
-		e.target.style.height = `${e.target.scrollHeight}px`;
-		// In case you have a limitation
-		// e.target.style.height = `${Math.min(e.target.scrollHeight, limit)}px`;
-	}
-
-	render() {
-		return <textarea ref={this.props._ref} onResize={this.props.onResize} {...this.props} onKeyUp={this.handleKeyDown} onKeyDown={this.handleKeyDown} />;
-	}
-}
-
-
 /*- Exports -*/
 export default Editor;
