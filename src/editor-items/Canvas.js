@@ -1,9 +1,6 @@
 import React from "react";
 import { ContextMenu } from "../components/ContextMenu";
-import { Icon } from "../components/Icon";
-
-/*- Constants -*/
-const BACKEND_URL = "http://localhost:8080/";
+import Globals from "../Globals";
 
 /*- Components -*/
 export class Canvas extends React.PureComponent {
@@ -70,9 +67,8 @@ export class Canvas extends React.PureComponent {
 		const canvas = this.canvasRef.current.getContext("2d");
 		
 		/*- Grab image content -*/
-		console.log(BACKEND_URL + this.props.id + "-" + this.data.id);
 		try {
-			fetch(BACKEND_URL + this.props.id + "-" + this.data.id).then(e => e.blob()).then(async e => {
+			fetch(Globals.BACKEND_URL + this.props.id + "-" + this.data.id).then(e => e.blob()).then(async e => {
 				var image = new Image();
 				image.src = await e.text();
 				image.onload = function() {

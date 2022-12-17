@@ -1,6 +1,5 @@
 import React from "react";
 import { ContextMenu } from "../components/ContextMenu";
-import { Icon } from "../components/Icon";
 
 export class Text extends React.PureComponent {
 	constructor(props) {

@@ -6,11 +6,8 @@ import { Note } from "./editor-items/Note";
 import { Text } from "./editor-items/Text";
 import { Canvas } from "./editor-items/Canvas";
 import { Toast } from "./components/Toast";
-import { Calculator } from "./editor-items/Calculator";
 import { Ptable } from "./editor-items/Ptable";
-
-/*- Constants -*/
-const BACKEND_URL = "http://localhost:8080/";
+import Globals from "./Globals";
 
 /*- Main -*/
 class Editor extends React.PureComponent {
@@ -183,7 +180,7 @@ class Editor extends React.PureComponent {
 		this.changeDarkMode(this.state.darkMode);
 
 		/*- Fetch docs -*/
-		fetch(BACKEND_URL + "get-doc", {
+		fetch(Globals.BACKEND_URL + "get-doc", {
 			method: "GET",
 			headers: {
 				"token": this.getCookie("token"),
@@ -410,6 +407,30 @@ class Editor extends React.PureComponent {
 		let notes = this.encodeItems(this.state.notes);
 		let texts = this.encodeItems(this.state.texts);
 
+		/*- Save canvases -*/
+		Object.keys(this.state.canvases).forEach((key) => {
+			/*- Save canvas -*/
+			fetch(Globals.BACKEND_URL + "save-canvas", {
+				method: "POST",
+				headers: {
+					"token": this.getCookie("token"),
+					"doc-id": this.id,
+					"canvas-id": this.state.canvases[key].id,
+				},
+				body: this.state.canvases[key].content,
+			})
+		});
+
+		/*- Remove content from canvases -*/
+		let canvases = {};
+		Object.keys(this.state.canvases).map((key) => {
+			let canvas = this.state.canvases[key];
+			canvases[key] = {
+				position: canvas.position,
+				id: canvas.id,
+			};
+		});
+
 		let data = {
 			"title": this.title,
 			"description": this.description,
@@ -420,7 +441,7 @@ class Editor extends React.PureComponent {
 
 			/*- Remove the content prop, but keep _real_content -*/
 			"notes": notes,
-			"canvases": this.state.canvases,
+			"canvases": canvases,
 		
 			/*- This will be set in backend -*/
 			"owner": "",
@@ -428,7 +449,7 @@ class Editor extends React.PureComponent {
 		};
 
 		/*- Send data to backend -*/
-		fetch(BACKEND_URL + "set-doc", {
+		fetch(Globals.BACKEND_URL + "set-doc", {
 			method: "GET",
 			headers: {
 				"token": this.getCookie("token"),
@@ -442,21 +463,6 @@ class Editor extends React.PureComponent {
 		});
 		this.setState({
 			saved: true,
-		});
-
-		/*- Save canvases -*/
-		Object.keys(this.state.canvases).forEach((key) => {
-			/*- Save canvas -*/
-			fetch(BACKEND_URL + "save-canvas", {
-				method: "POST",
-				headers: {
-					"token": this.getCookie("token"),
-					"doc-id": this.id,
-					"canvas-id": this.state.canvases[key].id,
-				},
-				body: this.state.canvases[key].content,
-			})
-			console.log("saved canvas");
 		});
 	}
 	
@@ -804,15 +810,10 @@ class Editor extends React.PureComponent {
 							)
 						})}
 
-						{/* <Calculator
+						{/* <Ptable
 							gridSnap={this.gridSnaps[this.state.snappingIndex]}
 							darkMode={this.state.darkMode}
-						/> */}
-						<Ptable
-							gridSnap={this.gridSnaps[this.state.snappingIndex]}
-							darkMode={this.state.darkMode}
-						/>
-							
+						/> */}		
 					</div>
 				</div>
 

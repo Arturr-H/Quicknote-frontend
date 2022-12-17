@@ -2,10 +2,7 @@
 import "./App.css";
 import React from "react";
 import { Icon } from "./components/Icon";
-
-/*- Constants -*/
-const BACKEND_URL = "http://localhost:8080/";
-const ACCOUNT_URL = "http://localhost:8081/";
+import Globals from "./Globals";
 
 /*- Main -*/
 class App extends React.PureComponent {
@@ -26,7 +23,7 @@ class App extends React.PureComponent {
 	/*- Default methods -*/
 	componentDidMount() {
 		/*- Fetch data -*/
-		fetch(BACKEND_URL + "get-documents", {
+		fetch(Globals.BACKEND_URL + "get-documents", {
 			method: "GET",
 			headers: {
 				"token": this.getCookie("token")
@@ -40,7 +37,7 @@ class App extends React.PureComponent {
 
 	/*- Methods -*/
 	createDocument = (title, description) => {
-		fetch(BACKEND_URL + "add-doc", {
+		fetch(Globals.BACKEND_URL + "add-doc", {
 			method: "GET",
 			headers: {
 				"token": this.getCookie("token"),
@@ -51,6 +48,18 @@ class App extends React.PureComponent {
 			const { id } = await res.json();
 
 			window.location.href = "/editor/" + id;
+		});
+	}
+	deleteDocument = (id) => {
+		fetch(Globals.BACKEND_URL + "delete-doc", {
+			method: "GET",
+			headers: {
+				"token": this.getCookie("token"),
+				"id": id
+			}
+		}).then(() => {
+			/*- Reload page -*/
+			window.location.reload();	
 		});
 	}
 
@@ -137,6 +146,7 @@ class App extends React.PureComponent {
 								date={data.date}
 								owner={data.owner}
 								href={data.id}
+								onDelete={() => this.deleteDocument(data.id)}
 							/>
 						)
 					}
@@ -199,7 +209,7 @@ class Card extends React.PureComponent {
 
 	/*- Get user -*/
 	componentDidMount() {
-		fetch(ACCOUNT_URL + "profile/data/by_suid/" + this.owner).then(res => res.json()).then(data => {
+		fetch(Globals.ACCOUNT_MANAGER_URL + "profile/data/by_suid/" + this.owner).then(res => res.json()).then(data => {
 			this.setState({ userData: data })
 		});
 	}
@@ -207,39 +217,48 @@ class Card extends React.PureComponent {
 	/*- Render -*/
 	render() {
 		return (
-			<a href={"/editor/" + this.href} target="blank">
-				<div className="card">
+			<div className="card">
+				<a href={"/editor/" + this.href} target="blank">
 					<div className="text">
 						<h2>{this.title}</h2>
 						<p>{this.description}</p>
 					</div>
+				</a>
+				
+				{/*- Extra data -*/}
+				<footer>
+					{/*- Created at -*/}
+					<div>
+						<Icon right name="time-square" />
+						<p>{this._date(this.date)}</p>
+					</div>
 
-					{/*- Extra data -*/}
-					<footer>
-						{/*- Created at -*/}
-						<div>
-							<Icon right name="time-square" />
-							<p>{this._date(this.date)}</p>
-						</div>
+					<Vr />
 
-						<Vr />
+					{/*- Author -*/}
+					<div>
+						<Icon right name="profile" />
+						<p>{this.state.userData && this.state.userData.displayname}</p>
+					</div>
 
-						{/*- Author -*/}
-						<div>
-							<Icon right name="profile" />
-							<p>{this.state.userData && this.state.userData.displayname}</p>
-						</div>
-					</footer>
-				</div>
-			</a>
+					<Vr margin />
+					<Vr />
+
+					{/*- Remove doc -*/}
+					<div onClick={this.props.onDelete}>
+						<Icon right name="delete" />
+						<p>Delete</p>
+					</div>
+				</footer>
+			</div>
 		)
 	}
 }
 
 /*- Vertical rule -*/
-function Vr() {
+function Vr(props) {
 	return (
-		<div className="vertical-rule"></div>
+		<div className="vertical-rule" style={(props.margin) ? { marginRight: "auto" } : {}} />
 	)
 }
 
@@ -285,7 +304,7 @@ class Modal extends React.PureComponent {
 	/*- Account -*/
 	register = () => {
 		if (this.passwordInput.current.value === this.confirmPasswordInput.current.value) {
-			fetch(ACCOUNT_URL + "create-account", {
+			fetch(Globals.ACCOUNT_MANAGER_URL + "create-account", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -308,7 +327,7 @@ class Modal extends React.PureComponent {
 		}
 	}
 	login = () => {
-		fetch(ACCOUNT_URL + "login", {
+		fetch(Globals.ACCOUNT_MANAGER_URL + "login", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
