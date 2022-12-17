@@ -139,7 +139,7 @@ export class Calculator extends React.PureComponent {
                     </div>
                     <div className="buttons">
                         <div className="row">
-                            <button>CE</button>
+                            <button><Icon name="ce" size={32} darkMode={this.props.darkMode} /></button>
                             <button><Icon name="sqrt" size={32} darkMode={this.props.darkMode} /></button>
                             <button><Icon name="remove" size={32} darkMode={this.props.darkMode} /></button>
                             <button><Icon name="remove" size={32} darkMode={this.props.darkMode} /></button>

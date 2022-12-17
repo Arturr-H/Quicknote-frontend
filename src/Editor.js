@@ -303,7 +303,7 @@ class Editor extends React.PureComponent {
 	/*- Methods for canvas tool -*/
 	addCanvas() {
 		this.addActiveDocument(() => {
-			const key = "canvas" + this.nextCanvasIndex;
+			const id = this.generateCanvasId()
 			let newCanvas = {
 				position: {
 					x: parseInt(this.drag.current.style.left),
@@ -314,15 +314,15 @@ class Editor extends React.PureComponent {
 					height: 0,
 				},
 				content: "",
-				id:key
+				id
 			};
-			this.canvases[key] = newCanvas;
+			this.canvases[id] = newCanvas;
 					
 			/*- Add Canvas -*/
 			this.setState({
 				canvases: {
 					...this.state.canvases,
-					[key]: newCanvas
+					[id]: newCanvas
 				},
 				placeItem: {
 					active: false,
@@ -334,6 +334,9 @@ class Editor extends React.PureComponent {
 			this.nextCanvasIndex++;
 			this.makeUnsaved();
 		}, 14.8, 9);		
+	}
+	generateCanvasId = () => {
+		return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 	}
 							
 	/*- Create text -*/
@@ -448,7 +451,7 @@ class Editor extends React.PureComponent {
 				headers: {
 					"token": this.getCookie("token"),
 					"doc-id": this.id,
-					"canvas-id": key,
+					"canvas-id": this.state.canvases[key].id,
 				},
 				body: this.state.canvases[key].content,
 			})
@@ -800,10 +803,10 @@ class Editor extends React.PureComponent {
 							)
 						})}
 
-						<Calculator
+						{/* <Calculator
 							gridSnap={this.gridSnaps[this.state.snappingIndex]}
 							darkMode={this.state.darkMode}
-						/>
+						/> */}
 					</div>
 				</div>
 

@@ -54,6 +54,7 @@ export class Icon extends React.PureComponent {
 			"eight": require("../icons/black/numbers/eight.svg").default,
 			"nine" : require("../icons/black/numbers/nine.svg").default,
 			"zero" : require("../icons/black/numbers/zero.svg").default,
+			"ce"   : require("../icons/black/ce.svg").default,
 		};
 		this.whiteIcons = {
 			"document-clear": require("../icons/white/document-clear.svg").default,

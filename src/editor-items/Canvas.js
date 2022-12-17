@@ -60,6 +60,7 @@ export class Canvas extends React.PureComponent {
 				this.setState({ contextMenu: { active: false } });
 			}
 		});
+		console.log(this.data.id);
 
 		/*- Set canvas position / previous image -*/
 		this.canvasRef.current.style.left = this.data.position.x + "px";
@@ -70,14 +71,15 @@ export class Canvas extends React.PureComponent {
 		
 		/*- Grab image content -*/
 		console.log(BACKEND_URL + this.props.id + "-" + this.data.id);
-		fetch(BACKEND_URL + this.props.id + "-" + this.data.id).then(e => e.blob()).then(async e => {
-			// console.log(await e.text());
-			var image = new Image();
-			image.src = await e.text();
-			image.onload = function() {
-				canvas.drawImage(image, 0, 0);
-			};
-		});
+		try {
+			fetch(BACKEND_URL + this.props.id + "-" + this.data.id).then(e => e.blob()).then(async e => {
+				var image = new Image();
+				image.src = await e.text();
+				image.onload = function() {
+					canvas.drawImage(image, 0, 0);
+				};
+			}).catch(e => {});
+		} catch { };
 
 	}
 	componentWillUnmount() {
