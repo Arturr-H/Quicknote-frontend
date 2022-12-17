@@ -7,6 +7,7 @@ import { Text } from "./editor-items/Text";
 import { Canvas } from "./editor-items/Canvas";
 import { Toast } from "./components/Toast";
 import { Calculator } from "./editor-items/Calculator";
+import { Ptable } from "./editor-items/Ptable";
 
 /*- Constants -*/
 const BACKEND_URL = "http://localhost:8080/";
@@ -800,10 +801,15 @@ class Editor extends React.PureComponent {
 							)
 						})}
 
-						<Calculator
+						{/* <Calculator
+							gridSnap={this.gridSnaps[this.state.snappingIndex]}
+							darkMode={this.state.darkMode}
+						/> */}
+						<Ptable
 							gridSnap={this.gridSnaps[this.state.snappingIndex]}
 							darkMode={this.state.darkMode}
 						/>
+							
 					</div>
 				</div>
 
