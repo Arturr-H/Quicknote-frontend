@@ -1,7 +1,5 @@
 import React from "react";
 import { ContextMenu } from "../components/ContextMenu";
-import { Icon } from "../components/Icon";
-import { TextArea } from "../Editor";
 
 /*- Components -*/
 export class Ptable extends React.PureComponent {
@@ -135,6 +133,8 @@ export class Ptable extends React.PureComponent {
 				</header>
                 <div className="ptable-container">
                     <PtableElement element="H" name="Väte"/>
+                <div className="ptable-container" ref={this.ptable}>
+                    <PtableElement element="H"/>
 					{/* <PtableBlock width="7" /> */}
                     <PtableElement element="He" name="Helium" type="1"/>
                     <PtableElement element="Li" name="Litium" type="2"/>
@@ -219,7 +219,6 @@ export class Ptable extends React.PureComponent {
                     <PtableElement />
                     <PtableElement />
                     <PtableElement />
-
                     <PtableElement />
                     <PtableElement />
                     <PtableElement />

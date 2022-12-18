@@ -1,9 +1,6 @@
 import React from "react";
 import { ContextMenu } from "../components/ContextMenu";
-import { Icon } from "../components/Icon";
-
-/*- Constants -*/
-const BACKEND_URL = "http://localhost:8080/";
+import Globals from "../Globals";
 
 /*- Components -*/
 export class Canvas extends React.PureComponent {
@@ -60,7 +57,6 @@ export class Canvas extends React.PureComponent {
 				this.setState({ contextMenu: { active: false } });
 			}
 		});
-		console.log(this.data.id);
 
 		/*- Set canvas position / previous image -*/
 		this.canvasRef.current.style.left = this.data.position.x + "px";
@@ -70,9 +66,8 @@ export class Canvas extends React.PureComponent {
 		const canvas = this.canvasRef.current.getContext("2d");
 		
 		/*- Grab image content -*/
-		console.log(BACKEND_URL + this.props.id + "-" + this.data.id);
 		try {
-			fetch(BACKEND_URL + this.props.id + "-" + this.data.id).then(e => e.blob()).then(async e => {
+			fetch(Globals.BACKEND_URL + "canvases/" + this.props.id + "-" + this.data.id).then(e => e.blob()).then(async e => {
 				var image = new Image();
 				image.src = await e.text();
 				image.onload = function() {
@@ -91,12 +86,14 @@ export class Canvas extends React.PureComponent {
 
 	/*- Event Handlers -*/
 	dragStart = (_) => {
+		if (!this.canvas.current) return;
 		this.setState({ dragging: true });
 
 		// Add border to show that it's being dragged
 		this.canvas.current.style.outline = "3px solid rgb(97, 195, 84)";
 	};
 	dragEnd = (_) => {
+		if (!this.canvas.current) return;
 		/*- Update pos -*/
 		this.setState({ dragging: false });
 		this.onChange(false, this.state.pos, false);
