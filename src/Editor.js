@@ -6,7 +6,7 @@ import { Note } from "./editor-items/Note";
 import { Text } from "./editor-items/Text";
 import { Canvas } from "./editor-items/Canvas";
 import { Toast } from "./components/Toast";
-// import { Ptable } from "./editor-items/Ptable";
+import { Ptable } from "./editor-items/Ptable";
 import Globals from "./Globals";
 
 /*- Main -*/
@@ -33,6 +33,9 @@ class Editor extends React.PureComponent {
 			toast: {
 				active: true,
 				message: "Welcome back!",
+			},
+			ptable: {
+				active: false,
 			},
 
 			snappingIndex: 0,
@@ -405,6 +408,15 @@ class Editor extends React.PureComponent {
 		}
 	}
 
+	/*- Toggle periodic table -*/
+	togglePeriodicTable = () => {
+		this.setState({
+			ptable: {
+				active: !this.state.ptable.active,
+			}
+		});
+	}
+
 	/*- Save document -*/
 	saveDocument = (possibleCallback) => {
 		let encodedNotes = this.encodeItems(this.state.notes);
@@ -623,6 +635,18 @@ class Editor extends React.PureComponent {
 
 							<Hr />
 
+							{/*- Show ptable -*/}
+							<button title="Show periodic table" className="toolbar-btn" onClick={this.togglePeriodicTable}>
+								<Icon light={this.state.darkMode} name="ptable" size={32} />
+							</button>
+
+							{/*- Add calculator -*/}
+							<button title="Add calculator" className="toolbar-btn" onClick={this.addCanvas}>
+								<Icon light={this.state.darkMode} name="calculator-horizontal" size={32} />
+							</button>
+
+							<Hr />
+
 							{/*- Grid snap size -*/}
 							<button title="Change grid snap size" className="toolbar-btn" onClick={this.incrementGridSnap}>
 								<Icon light={this.state.darkMode} name={
@@ -634,13 +658,6 @@ class Editor extends React.PureComponent {
 									this.state.gridSnap === 32 ? "32x32" :
 									"1x1"
 								} size={32} />
-							</button>
-
-							<Hr />
-
-							{/*- Add calculator -*/}
-							<button title="Add calculator" className="toolbar-btn" onClick={this.addCanvas}>
-								<Icon light={this.state.darkMode} name="calculator-horizontal" size={32} />
 							</button>
 
 							<Hr />
@@ -838,10 +855,10 @@ class Editor extends React.PureComponent {
 							)
 						})}
 
-						{/* <Ptable
+						{this.state.ptable.active ? <Ptable
 							gridSnap={this.gridSnaps[this.state.snappingIndex]}
 							darkMode={this.state.darkMode}
-						/> */}		
+						/>:null}
 					</div>
 				</div>
 

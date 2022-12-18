@@ -97,12 +97,14 @@ export class Note extends React.PureComponent {
 
 	/*- Event Handlers -*/
 	dragStart = (_) => {
+		if (!this.note.current) return;
 		this.setState({ dragging: true });
 	
 		// Add border to show that it's being dragged
 		this.note.current.style.outline = "3px solid rgb(97, 195, 84)";
 	};
 	dragEnd = (_) => {
+		if (!this.note.current) return;
 		this.setState({ dragging: false });
 		this.onChange(false, this.state.pos, false);
 
