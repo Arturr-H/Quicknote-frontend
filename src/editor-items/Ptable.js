@@ -134,15 +134,15 @@ export class Ptable extends React.PureComponent {
 					</div>
 				</header>
                 <div className="ptable-container">
-                    <PtableElement element="H"/>
+                    <PtableElement element="H" name="Väte"/>
 					{/* <PtableBlock width="7" /> */}
-                    <PtableElement element="He" type="1"/>
-                    <PtableElement element="Li" type="2"/>
-                    <PtableElement element="Be"/>
-                    <PtableElement element="B"/>
-                    <PtableElement element="C"/>
-                    <PtableElement element="N"/>
-                    <PtableElement element="O"/>
+                    <PtableElement element="He" name="Helium" type="1"/>
+                    <PtableElement element="Li" name="Litium" type="2"/>
+                    <PtableElement element="Be" name="Beryllium"/>
+                    <PtableElement element="B" name="Bor"/>
+                    <PtableElement element="C" name="Kol"/>
+                    <PtableElement element="N" name="Kväve"/>
+                    <PtableElement element="O" name="Syre"/>
                     <PtableElement element="F"/>
                     <PtableElement element="Ne"/>
                     <PtableElement element="Na"/>
@@ -258,6 +258,7 @@ export class Ptable extends React.PureComponent {
 class PtableElement extends React.PureComponent{
 	render(){	
 		return (
+			
 			/*Types
 				Type 1: Icke-metaller
 				Type 2: Ädelgaser
@@ -268,7 +269,14 @@ class PtableElement extends React.PureComponent{
 				Type 7: Övergångsmetall
 			*/
 			<div className="ptable-element" id={this.props.element} element={this.props.element}>
-
+				{
+					this.props.name ?
+					<p className="ptable-element-name" style={
+						// {letterSpacing: `-${this.props.name.length >= 7 ? this.props.name.length / 20 - 3 : this.props.name.length/20}px`}
+						{letterSpacing: `-${this.props.name.length/20 + 0.2}px`}
+					}>{this.props.name}</p>
+					: <></>
+				}
 			</div>
 		)
 	}
