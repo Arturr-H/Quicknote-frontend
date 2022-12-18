@@ -1,5 +1,6 @@
 import React from "react";
 import { ContextMenu } from "../components/ContextMenu";
+import Globals from "../Globals";
 
 /*- Components -*/
 export class Note extends React.PureComponent {
@@ -48,6 +49,14 @@ export class Note extends React.PureComponent {
 		this.body.current.style.width = this.data.size.width + "px";
 		this.body.current.style.height = this.data.size.height + "px";
 
+		/*- Fetch data -*/
+		const decoder = new TextDecoder();
+		fetch(Globals.BACKEND_URL + "notes/" + this.props.id + "-" + this.data.id).then(res => res.text()).then(data => {
+			let content = decoder.decode(new Uint8Array(JSON.parse(data)));
+
+			this.onChange(content, false, false);
+		});
+
 		this.drag.current.addEventListener("mousedown", () => {
 			this.dragStart();
 		});
@@ -67,6 +76,24 @@ export class Note extends React.PureComponent {
 		window.removeEventListener("mouseup", this.dragEnd);
 		window.removeEventListener("mousemove", this.dragMove);
 	}
+
+	/*- Convert bytes into real text strings -*/
+	convertToRealContent = (content) => {
+		let items = {};
+		const keys = Object.keys(content);
+		const decoder = new TextDecoder();
+
+		keys.forEach(key => {
+			let array = content[key]._real_content; // Array([])
+
+			items[key] = {
+				...content[key],
+				content: decoder.decode(new Uint8Array(array)),
+			};
+		});
+
+		return items;
+	};
 
 	/*- Event Handlers -*/
 	dragStart = (_) => {

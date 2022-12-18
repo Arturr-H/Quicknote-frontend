@@ -6,7 +6,7 @@ import { Note } from "./editor-items/Note";
 import { Text } from "./editor-items/Text";
 import { Canvas } from "./editor-items/Canvas";
 import { Toast } from "./components/Toast";
-import { Ptable } from "./editor-items/Ptable";
+// import { Ptable } from "./editor-items/Ptable";
 import Globals from "./Globals";
 
 /*- Main -*/
@@ -141,6 +141,8 @@ class Editor extends React.PureComponent {
 		});
 	}
 	placeNote() {
+		const id = this.generateItemId();
+
 		/*- Create Note -*/
 		let newNote = {
 			position: {
@@ -153,8 +155,9 @@ class Editor extends React.PureComponent {
 			},
 			_real_content: [],
 			content: "",
+			id: id,
 		};
-		this.notes["note" + this.nextNoteIndex] = newNote;
+		this.notes[id] = newNote;
 		this.makeUnsaved();
 
 		/*- Add Note -*/
@@ -165,7 +168,7 @@ class Editor extends React.PureComponent {
 			},
 			notes: {
 				...this.state.notes,
-				["note" + this.nextNoteIndex]: newNote
+				[id]: newNote
 			}
 		});
 
@@ -301,7 +304,7 @@ class Editor extends React.PureComponent {
 	/*- Methods for canvas tool -*/
 	addCanvas() {
 		this.addActiveDocument(() => {
-			const id = this.generateCanvasId()
+			const id = this.generateItemId();
 			let newCanvas = {
 				position: {
 					x: parseInt(this.drag.current.style.left),
@@ -333,7 +336,7 @@ class Editor extends React.PureComponent {
 			this.makeUnsaved();
 		}, 14.8, 9);		
 	}
-	generateCanvasId = () => {
+	generateItemId = () => {
 		return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 	}
 							
@@ -404,7 +407,7 @@ class Editor extends React.PureComponent {
 
 	/*- Save document -*/
 	saveDocument = (possibleCallback) => {
-		let notes = this.encodeItems(this.state.notes);
+		let encodedNotes = this.encodeItems(this.state.notes);
 		let texts = this.encodeItems(this.state.texts);
 
 		/*- Save canvases -*/
@@ -421,13 +424,36 @@ class Editor extends React.PureComponent {
 			})
 		});
 
-		/*- Remove content from canvases -*/
+		/*- Save notes -*/
+		Object.keys(encodedNotes).forEach((key) => {
+			/*- Save note -*/
+			fetch(Globals.BACKEND_URL + "save-note", {
+				method: "POST",
+				headers: {
+					"token": this.getCookie("token"),
+					"doc-id": this.id,
+					"note-id": key,
+				},
+				body: JSON.stringify(encodedNotes[key]._real_content),
+			})
+		});
+
+		/*- Remove content from canvases & notes -*/
 		let canvases = {};
-		Object.keys(this.state.canvases).map((key) => {
+		let notes = {};
+		Object.keys(this.state.canvases).forEach((key) => {
 			let canvas = this.state.canvases[key];
 			canvases[key] = {
 				position: canvas.position,
 				id: canvas.id,
+			};
+		});
+		Object.keys(encodedNotes).forEach((key) => {
+			let note = encodedNotes[key];
+			notes[key] = {
+				position: note.position,
+				size: note.size,
+				id: key,
 			};
 		});
 
@@ -477,6 +503,7 @@ class Editor extends React.PureComponent {
 				position: items[key].position,
 				size: items[key].size,
 				font_size: items[key].size.font_size,
+				id: items[key].id,
 			};
 		});
 		return _items;
@@ -677,6 +704,7 @@ class Editor extends React.PureComponent {
 									data={this.state.notes[key]}
 									key={key}
 									index={key}
+									id={this.id}
 									darkMode={this.state.darkMode}
 									onChange={(content, position, size) => {
 										/*- Only update what's changed -*/
