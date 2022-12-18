@@ -1029,8 +1029,8 @@ body{
 	font-size: .8rem;
 	font-family: "Roboto Condensed";
 	font-weight: 300;
-	color: #00000093;
-	left: .1rem;
+	color: var(--main-5);
+	right: .2rem;
 	top: .1rem;
 	letter-spacing: -1px;
 }.ptable-container > .ptable-element:after{
@@ -1043,6 +1043,12 @@ body{
 	color: var(--text);
 	left: 50%;
 	transform: translateX(-50%);
+}.ptable-container > .ptable-element > .ptable-element-name{
+	position: absolute;
+	bottom: 0;
+	margin: 0; padding: 0;
+	font-size: 0.6rem;
+	font-family: "Roboto Condensed";
 }
 
 
