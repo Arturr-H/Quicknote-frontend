@@ -191,12 +191,11 @@ main > .main > a { text-decoration: none; }
 
 /*- Toolbar -*/
 .toolbar-positioner {
-	width: 4rem;
 	height: auto;
 	position: absolute;
 	z-index: 1003;
 }.toolbar {
-	width: 100%;
+	width: 4rem;
 	height: 100%;
 	border-radius: 1rem;
 	background: var(--main);
@@ -205,19 +204,31 @@ main > .main > a { text-decoration: none; }
 	display: inline-flex;
 	flex-wrap: wrap;
 	flex-direction: column;
-	align-items: center;
-	gap: 0.5rem;
+	gap: 0.2rem;
 
 	box-sizing: border-box;
-	padding: 0.5rem;
+	padding: 0.25rem 0.5rem;
 
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 
 	margin-left: 0.5rem;
 	margin-top: 0.5rem;
-	transition: background 0.3s ease;
-}.toolbar > .toolbar-btn {
-	width: 100%;
+	transition: background 0.3s ease, width 0.1s ease;
+	overflow: hidden;
+}.toolbar > .row {
+	display: inline-flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.5rem;
+}.toolbar > .row > p {
+	font-family: 'Poppins', sans-serif;
+	color: var(--main-4);
+	white-space: nowrap;
+}.toolbar:hover {
+	width: 12rem;
+}.toolbar > .row > .toolbar-btn {
+	width: 3rem;
+	height: 3rem;
 	aspect-ratio: 1;
 
 	display: flex;
@@ -232,12 +243,12 @@ main > .main > a { text-decoration: none; }
 	border: 0.1rem solid var(--main-1);
 	box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
 	transition: background 0.04s ease;
-}.toolbar > .toolbar-btn:hover {
+}.toolbar > .row > .toolbar-btn:hover {
 	background: var(--main-1);
-}.toolbar > .toolbar-btn.active {
+}.toolbar > .row > .toolbar-btn.active {
 	box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.1);
 
-}.toolbar > .toolbar-btn > p {
+}.toolbar > .row > .toolbar-btn > p {
 	font-family: 'Poppins', sans-serif;
 	font-weight: 300;
 	font-size: 0.8rem;
@@ -247,7 +258,7 @@ main > .main > a { text-decoration: none; }
 
 	color: var(--main-3);
 	cursor:default;
-}.toolbar > .toolbar-btn.behind {
+}.toolbar > .row > .toolbar-btn.behind {
 	position: absolute;
 	left: 4rem;
 }

@@ -133,10 +133,8 @@ export class Ptable extends React.PureComponent {
 						<div></div>
 					</div>
 				</header>
-                <div className="ptable-container">
-                    <PtableElement element="H" name="Väte"/>
                 <div className="ptable-container" ref={this.ptable}>
-                    <PtableElement element="H"/>
+                    <PtableElement element="H" name="Väte"/>
 					{/* <PtableBlock width="7" /> */}
                     <PtableElement element="He" name="Helium" type="1"/>
                     <PtableElement element="Li" name="Litium" type="2"/>
@@ -249,7 +247,7 @@ export class Ptable extends React.PureComponent {
                     <PtableElement />
                     <PtableElement />
                     <PtableElement />
-                </div>
+				</div>
 			</div>
 		);
 	}

@@ -603,78 +603,110 @@ class Editor extends React.PureComponent {
 				<div className="main-wrapper">
 					<div className="toolbar-positioner">
 						<div className="toolbar">
-							{/*- Go home -*/}
-							<button title="Home" className="toolbar-btn" onClick={() => {
-								this.saveDocument(() => {
-									window.open("/", "_self");
-								});
-							}}>
-								<Icon light={this.state.darkMode} name="home" size={32} />
-							</button>
+							<div className="row">
+								{/*- Go home -*/}
+								<button title="Home" className="toolbar-btn" onClick={() => {
+									this.saveDocument(() => {
+										window.open("/", "_self");
+									});
+								}}>
+									<Icon light={this.state.darkMode} name="home" size={32} />
+								</button>
+
+								<p>Home</p>
+							</div>
 
 							<Hr />
 
 							{/*- Create note -*/}
-							<button title="Create a note element" className="toolbar-btn" onClick={() => this.addActiveDocument(() => this.placeNote(), 10.1, 7.1)}>
-								<Icon light={this.state.darkMode} name="note" size={32} />
-							</button>
+							<div className="row">
+								<button title="Create a note element" className="toolbar-btn" onClick={() => this.addActiveDocument(() => this.placeNote(), 10.1, 7.1)}>
+									<Icon light={this.state.darkMode} name="note" size={32} />
+								</button>
+
+								<p>Note</p>
+							</div>
 
 							{/*- Create text -*/}
-							<button
-								title="Create a text element"
-								className={"toolbar-btn" + (this.state.placeText.active ? " active" : "")}
-								onClick={this.activateTextBoxAreaTool}
-							>
-								<Icon light={this.state.darkMode} name="text" size={32} />
-							</button>
+							<div className="row">
+								<button
+									title="Create a text element"
+									className={"toolbar-btn" + (this.state.placeText.active ? " active" : "")}
+									onClick={this.activateTextBoxAreaTool}
+								>
+									<Icon light={this.state.darkMode} name="text" size={32} />
+								</button>
+
+								<p>Text</p>
+							</div>
 
 							{/*- Create canvas -*/}
-							<button title="Create a canvas" className="toolbar-btn" onClick={this.addCanvas}>
-								<Icon light={this.state.darkMode} name="canvas" size={32} />
-							</button>
+							<div className="row">
+								<button title="Create a canvas" className="toolbar-btn" onClick={this.addCanvas}>
+									<Icon light={this.state.darkMode} name="canvas" size={32} />
+								</button>
+
+								<p>Canvas</p>
+							</div>
 
 							<Hr />
 
 							{/*- Show ptable -*/}
-							<button title="Show periodic table" className="toolbar-btn" onClick={this.togglePeriodicTable}>
-								<Icon light={this.state.darkMode} name="ptable" size={32} />
-							</button>
+							<div className="row">
+								<button title="Show periodic table" className="toolbar-btn" onClick={this.togglePeriodicTable}>
+									<Icon light={this.state.darkMode} name="ptable" size={32} />
+								</button>
+								<p>Periodic table</p>
+							</div>
 
 							{/*- Add calculator -*/}
-							<button title="Add calculator" className="toolbar-btn" onClick={this.addCanvas}>
-								<Icon light={this.state.darkMode} name="calculator-horizontal" size={32} />
-							</button>
+							<div className="row">
+								<button title="Add calculator" className="toolbar-btn" onClick={this.addCanvas}>
+									<Icon light={this.state.darkMode} name="calculator-horizontal" size={32} />
+								</button>
 
+								<p>Calculator</p>
+							</div>
 							<Hr />
 
 							{/*- Grid snap size -*/}
-							<button title="Change grid snap size" className="toolbar-btn" onClick={this.incrementGridSnap}>
-								<Icon light={this.state.darkMode} name={
-									this.state.gridSnap === 1 ? "1x1" :
-									this.state.gridSnap === 2 ? "2x2" :
-									this.state.gridSnap === 4 ? "4x4" :
-									this.state.gridSnap === 8 ? "8x8" :
-									this.state.gridSnap === 16 ? "16x16" :
-									this.state.gridSnap === 32 ? "32x32" :
-									"1x1"
-								} size={32} />
-							</button>
+							<div className="row">
+								<button title="Change grid snap size" className="toolbar-btn" onClick={this.incrementGridSnap}>
+									<Icon light={this.state.darkMode} name={
+										this.state.gridSnap === 1 ? "1x1" :
+										this.state.gridSnap === 2 ? "2x2" :
+										this.state.gridSnap === 4 ? "4x4" :
+										this.state.gridSnap === 8 ? "8x8" :
+										this.state.gridSnap === 16 ? "16x16" :
+										this.state.gridSnap === 32 ? "32x32" :
+										"1x1"
+									} size={32} />
+								</button>
+								
+								<p>Snap</p>
+							</div>
 
 							<Hr />
 
 							{/*- Change dark / light mode -*/}
-							<button title="Change light / dark mode" className="toolbar-btn" onClick={this.toggleNightMode}>
-								<Icon light={this.state.darkMode} name={
-									this.state.darkMode === true ? "moon" : "sun"
-								} size={32} />
-							</button>
+							<div className="row">
+								<button title="Change light / dark mode" className="toolbar-btn" onClick={this.toggleNightMode}>
+									<Icon light={this.state.darkMode} name={
+										this.state.darkMode === true ? "moon" : "sun"
+									} size={32} />
+								</button>
+								<p>Theme</p>
+							</div>
 
 							<Hr />
 
 							{/*- Save document -*/}
-							<button title="Save" className="toolbar-btn" onClick={this.saveDocument}>
-								<Icon light={this.state.darkMode} name="check" size={32} />
-							</button>
+							<div className="row">
+								<button title="Save" className="toolbar-btn" onClick={this.saveDocument}>
+									<Icon light={this.state.darkMode} name="check" size={32} />
+								</button>
+								<p>Save</p>
+							</div>
 						</div>
 					</div>
 					<div className="editor-content">
