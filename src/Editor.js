@@ -6,6 +6,7 @@ import { Note } from "./editor-items/Note";
 import { Text } from "./editor-items/Text";
 import { Canvas } from "./editor-items/Canvas";
 import { Toast } from "./components/Toast";
+import { Ptable } from "./editor-items/Ptable";
 // import { Ptable } from "./editor-items/Ptable";
 import Globals from "./Globals";
 
@@ -661,7 +662,7 @@ class Editor extends React.PureComponent {
 						</div>
 					</div>
 					<div className="editor-content">
-						<h1 className="watermark"><img alt="logo" src={require("./icons/logo.svg").default} width={600} /></h1>
+						<h1 className="watermark"><img alt="logo" src={require("./icons/logo.svg").default} /></h1>
 
 						{/*- Notes cursor -*/}
 						{this.state.placeItem.active && <div className="note-place" style={{
@@ -838,10 +839,10 @@ class Editor extends React.PureComponent {
 							)
 						})}
 
-						{/* <Ptable
+						<Ptable
 							gridSnap={this.gridSnaps[this.state.snappingIndex]}
 							darkMode={this.state.darkMode}
-						/> */}		
+						/>
 					</div>
 				</div>
 
