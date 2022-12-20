@@ -173,12 +173,14 @@ export class Ptable extends React.PureComponent {
 
 	/*- Event Handlers -*/
 	dragStart = (_) => {
+		if (!this.ptable.current) return;
 		this.setState({ dragging: true });
 	
 		// Add border to show that it's being dragged
 		this.ptable.current.style.outline = "3px solid rgb(97, 195, 84)";
 	};
 	dragEnd = (_) => {
+		if (!this.ptable.current) return;
 		this.setState({ dragging: false });
 
 		// Remove border
@@ -254,6 +256,7 @@ export class Ptable extends React.PureComponent {
 					</div>
 				</header>
                 <div className="ptable-container" ref={this.ptable}>
+<<<<<<< HEAD
                     {
 						this.periodicTableData.map((element, index) => {
 							return (
@@ -267,6 +270,122 @@ export class Ptable extends React.PureComponent {
 						})
 					}
                 </div>
+=======
+                    <PtableElement element="H" name="Väte"/>
+					{/* <PtableBlock width="7" /> */}
+                    <PtableElement element="He" name="Helium" type="1"/>
+                    <PtableElement element="Li" name="Litium" type="2"/>
+                    <PtableElement element="Be" name="Beryllium"/>
+                    <PtableElement element="B" name="Bor"/>
+                    <PtableElement element="C" name="Kol"/>
+                    <PtableElement element="N" name="Kväve"/>
+                    <PtableElement element="O" name="Syre"/>
+                    <PtableElement element="F"/>
+                    <PtableElement element="Ne"/>
+                    <PtableElement element="Na"/>
+                    <PtableElement element="Mg"/>
+                    <PtableElement element="Al"/>
+                    <PtableElement element="Si"/>
+                    <PtableElement element="P"/>
+                    <PtableElement element="S"/>
+                    <PtableElement element="Cl"/>
+                    <PtableElement element="Ar"/>
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+                    <PtableElement />
+				</div>
+>>>>>>> 183e2ab09396e37d2ae71bba0d5ab1933635b2f2
 			</div>
 		);
 	}

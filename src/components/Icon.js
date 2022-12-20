@@ -44,6 +44,7 @@ export class Icon extends React.PureComponent {
 			"multiplication"       : require("../icons/black/multiplication.svg").default,
 			"remove"               : require("../icons/black/remove.svg").default,
 			"sqrt"                 : require("../icons/black/sqrt.svg").default,
+			"ptable"               : require("../icons/black/ptable.svg").default,
 			"one"  : require("../icons/black/numbers/one.svg").default,
 			"two"  : require("../icons/black/numbers/two.svg").default,
 			"three": require("../icons/black/numbers/three.svg").default,

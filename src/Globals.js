@@ -1,5 +1,5 @@
 /*- GLOBAL VARIABLES -*/
 export default {
-    ACCOUNT_MANAGER_URL: "https://backend.artur.red/",
-    BACKEND_URL: "https://artur.red/",
+    ACCOUNT_MANAGER_URL: "http://0.0.0.0:8080/",
+    BACKEND_URL: "http://0.0.0.0:8081/",
 }
